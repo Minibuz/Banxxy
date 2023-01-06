@@ -40,12 +40,13 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   CREATE TABLE IF NOT EXISTS compte.public.operation
   (
+      id serial,
       nocompte character(4) COLLATE pg_catalog."default" NOT NULL,
       date date NOT NULL,
       heure time without time zone NOT NULL,
       op character(1) COLLATE pg_catalog."default" NOT NULL,
       valeur numeric(10,2) NOT NULL,
-      CONSTRAINT "OPERATION_pkey" PRIMARY KEY (nocompte)
+      CONSTRAINT "OPERATION_pkey" PRIMARY KEY (id)
   )
 
       TABLESPACE pg_default;
