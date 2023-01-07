@@ -29,32 +29,48 @@
     </ul>
   </div>
 
-  <p>
-    <!-- use the router-link component for navigation. -->
-    <!-- specify the link by passing the `to` prop. -->
-    <!-- `<router-link>` will render an `<a>` tag with the correct `href` attribute -->
-    <router-link to="/">Go to Home</router-link>
-    <router-link to="/about">Go to About</router-link>
-  </p>
-  <!-- route outlet -->
-  <!-- component matched by the route will render here -->
-  <router-view></router-view>
+  <v-divider></v-divider>
+  <h2> Page </h2>
+  <v-btn
+      class="ma-2"
+      color="primary"
+      @click="goTo('/home')">
+    Home
+  </v-btn>
 
+  <v-btn
+      class="ma-2"
+      color="primary"
+      @click="goTo('/login')">
+    Login
+  </v-btn>
 
+  <v-btn
+      class="ma-2"
+      color="primary"
+  @click="goTo('/random')">
+    404
+  </v-btn>
 
 </template>
 
 <script>
+
+
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
   },
+
   methods: {
     increment() {
       this.$store.commit('increment')
       console.log(this.$store.state.count)
     },
+    goTo(name){
+      this.$router.push(name)
+    }
   }
 }
 </script>
