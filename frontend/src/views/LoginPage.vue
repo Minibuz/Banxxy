@@ -40,9 +40,6 @@
 <script>
 export default {
   name: 'LoginPage',
-  props: {
-    msg: String
-  },
   data() {
     return {
       form: {mail: null, password: null},
@@ -81,7 +78,6 @@ export default {
       }catch (error){
         console.log(error);
       }
-
     }
   }
 }
