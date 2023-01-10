@@ -7,10 +7,27 @@ import { createRouter, createWebHistory } from 'vue-router'
 // We'll talk about nested routes later.
 const routes = [
     {   path: '/',
-        component: () => import('@/components/HelloWorld.vue'),
+        name: "blank",
+        component: () => import('@/views/HelloWorld.vue'),
+        meta: {requiresAuth: false, layout: 'content'}
     },
     {   path: '/login',
-        component: () => import('@/components/LoginPage.vue'),
+        name: "login",
+        component: () => import('@/views/LoginPage.vue'),
+        meta: {requiresAuth: false, layout: 'blank'}
+    },
+    {   path: '/home',
+        name: "home",
+        component: () => import('@/views/HomePage.vue'),
+        meta: {requiresAuth: false, layout: 'content'}
+    },
+    {   path: '/error-404',
+
+    },
+    {   path: '/:pathMatch(.*)',
+        name: "error-404",
+        component: () => import('@/views/Error404.vue'),
+        meta: {requiresAuth: false, layout: 'blank'}
     },
 ]
 

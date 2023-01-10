@@ -4,7 +4,7 @@
 
       <div class="col-md-6 d-none d-md-flex bg-image"></div>
 
-      <div class="col-md-6 bg-light">
+      <div class="col-md-6">
         <div class="login d-flex align-items-center py-5">
 
 
@@ -22,7 +22,7 @@
                   </div>
 
                   <div class="d-grid gap-2 mt-2">
-                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" @click="increment">Sign in</button>
+                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" @click="handleLogin">Sign in</button>
                   </div>
 
                 </form>
@@ -40,14 +40,45 @@
 <script>
 export default {
   name: 'LoginPage',
-  props: {
-    msg: String
+  data() {
+    return {
+      form: {mail: null, password: null},
+      errors: {}
+    }
   },
   methods: {
     increment() {
       this.$store.commit('increment')
       console.log(this.$store.state.count)
     },
+
+    //this is a API Call example
+    async handleLogin(){
+      //when need to give token to the backEnd
+      const config = {
+        //choose the method you need
+        method: 'POST',
+        //don't change the headers
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        },
+        //only if you use POST, PUT, PATCH ...
+        // this is an example
+        body: JSON.stringify({
+          userId: 1,
+          token:  'randomToken',
+        })
+      }
+      console.log(config)
+      try {
+        //to test if the fetch is working i use pokemon API
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon');
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+    }
   }
 }
 </script>

@@ -11,13 +11,15 @@
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13",
+    "vue": "^3.2.45",
     "vue-router": "^4.1.6",
+    "vuetify": "^3.0.6",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@mdi/js": "^7.1.96",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
