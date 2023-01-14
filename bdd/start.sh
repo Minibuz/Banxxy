@@ -73,6 +73,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   CREATE TABLE public.transaction (
       id bigint NOT NULL,
       date date NOT NULL,
+      amount bigint NOT NULL,
       author bigint NOT NULL,
       account_from bigint NOT NULL,
       account_to bigint NOT NULL
