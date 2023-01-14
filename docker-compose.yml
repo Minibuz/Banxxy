@@ -13,7 +13,7 @@ services:
           - "5432:5432"
 
     app:
-        image: 'docker-spring-boot-postgres:latest'
+        image: 'spring-boot-vue'
         build:
           context: .
         container_name: app

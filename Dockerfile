@@ -1,7 +1,7 @@
 # Docker multi-stage build
 
 # 1. Building the App with Maven
-FROM maven:3-openjdk-18
+FROM maven:3-openjdk-17
 
 
 ADD . /banxxy
@@ -24,7 +24,7 @@ MAINTAINER Jonas Hecht
 VOLUME /tmp
 
 # Add Spring Boot app.jar to Container
-COPY --from=0 "/banxxy/backend/target/backend-0.0.1-SNAPSHOT.jar" app.jar
+COPY --from=0 "/banxxy/backend/target/backend-0.0.2-SNAPSHOT.jar" app.jar
 
 
 ENV JAVA_OPTS=""
