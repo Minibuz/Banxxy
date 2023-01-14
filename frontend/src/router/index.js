@@ -22,12 +22,17 @@ const routes = [
         meta: {requiresAuth: false, layout: 'content'}
     },
     {   path: '/error-404',
-
     },
     {   path: '/:pathMatch(.*)*',
         name: "error-404",
         component: () => import('@/views/Error404.vue'),
         meta: {requiresAuth: false, layout: 'blank'}
+    },
+    {
+        path: '/userCreation',
+        name: 'userCreation',
+        component: () => import('@/views/UserCreation'),
+        meta: {requiresAuth: false, layout: 'content'}
     },
 ]
 
