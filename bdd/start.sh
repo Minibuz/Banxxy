@@ -35,7 +35,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   CREATE TABLE public.account (
       id bigint NOT NULL,
-      customer_id character(4) NOT NULL,
+      customer_id bigint NOT NULL,
       balance bigint NOT NULL
   );
 
@@ -47,7 +47,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   --
 
   CREATE TABLE public.advisor (
-      id character(4) NOT NULL
+      id bigint NOT NULL
   );
 
 
@@ -58,9 +58,9 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   --
 
   CREATE TABLE public.customer (
-      id character(4) NOT NULL,
-      advisor character(4) NOT NULL,
-      parent character(4)
+      id bigint NOT NULL,
+      advisor bigint NOT NULL,
+      parent bigint
   );
 
 
@@ -73,7 +73,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   CREATE TABLE public.transaction (
       id bigint NOT NULL,
       date date NOT NULL,
-      author character(4) NOT NULL,
+      author bigint NOT NULL,
       account_from bigint NOT NULL,
       account_to bigint NOT NULL
   );
@@ -86,7 +86,8 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   --
 
   CREATE TABLE public."user" (
-      id character(4) NOT NULL,
+      id bigint NOT NULL,
+      personal_id character(4) NOT NULL,
       username character varying(20) NOT NULL,
       name character varying(20) NOT NULL,
       firstname character varying(20) NOT NULL,

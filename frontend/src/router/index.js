@@ -24,7 +24,7 @@ const routes = [
     {   path: '/error-404',
 
     },
-    {   path: '/:pathMatch(.*)',
+    {   path: '/:pathMatch(.*)*',
         name: "error-404",
         component: () => import('@/views/Error404.vue'),
         meta: {requiresAuth: false, layout: 'blank'}
