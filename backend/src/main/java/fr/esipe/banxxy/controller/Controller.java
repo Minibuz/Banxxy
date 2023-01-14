@@ -9,6 +9,7 @@ public class Controller {
 
     @RequestMapping(value = "{_:^(?!api).$}", method = {RequestMethod.GET, RequestMethod.POST})
     public String redirectApi() {
+        System.out.println("Test");
         return "forward:/";
     }
 }
