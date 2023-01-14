@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -37,26 +37,31 @@ public class AccountServiceImpl implements AccountService {
         return user instanceof AdvisorEntity;
     }
 
-    private Optional<Set<CustomerEntity>> getCustomersFromUser(UserEntity user, int id) {
+    private Set<CustomerEntity> getCustomersFromUser(UserEntity user, int id) {
         if (isAdvisor(user)) {
             var advisor = advisorRepository.findById(id).orElseThrow();
-            return Optional.of(advisor.getCustomers());
+            return advisor.getCustomers();
         } else if (user instanceof CustomerEntity)
-            return Optional.of(Set.of(customerRepository.findById(id).orElseThrow()));
-        else return Optional.empty();
+            return Set.of(customerRepository.findById(id).orElseThrow());
+        else return Set.of();
     }
 
     @Override
     public AccountDto getAccountDetails(Integer accountId, Integer userId) {
-        if(userId == 0)
-            return new AccountDto("Léo", "Barroux","Christine","LeMaraicher",100L);
+        // TODO - remove, only for test
+        if (userId == 0)
+            return new AccountDto("Léo", "Barroux", "Christine", "LeMaraicher", 100L);
 
         AccountEntity account;
         CustomerEntity customer;
         var user = userRepository.findById(userId).orElseThrow();
         if (user instanceof AdvisorEntity)
+            // TODO - replace exception thrown by returning error to api
             throw new IllegalArgumentException("Id should be a Customer, not an Advisor");
-        var customers = getCustomersFromUser(user, userId).orElseThrow();
+        var customers = getCustomersFromUser(user, userId);
+        if (customers.isEmpty())
+            // TODO - replace exception thrown by returning error to api
+            throw new NoSuchElementException("No customer found for this user");
         if (isAdvisor(user)) {
             account = customers.stream()
                     .map(CustomerEntity::getAccounts)
@@ -65,6 +70,7 @@ public class AccountServiceImpl implements AccountService {
                     .findFirst()
                     .orElse(null);
             if (account == null)
+                // TODO - replace exception thrown by returning error to api
                 throw new IllegalStateException("The account does not correspond to a Customer for this Advisor");
             customer = account.getCustomer();
         } else {
@@ -74,6 +80,7 @@ public class AccountServiceImpl implements AccountService {
                     .findFirst()
                     .orElse(null);
             if (account == null)
+                // TODO - replace exception thrown by returning error to api
                 throw new IllegalStateException("The account does not correspond to any of yours");
         }
         var advisor = customer.getAdvisor();
