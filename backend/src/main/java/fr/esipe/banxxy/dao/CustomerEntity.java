@@ -2,6 +2,7 @@ package fr.esipe.banxxy.dao;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "customer")
@@ -13,9 +14,18 @@ public class CustomerEntity extends UserEntity {
     @ManyToOne
     @JoinColumn(name = "parent")
     private CustomerEntity parent;
-
+    @OneToMany(mappedBy = "customer")
+    private Set<AccountEntity> accounts;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private List<CustomerEntity> childrens;
+
+    public Set<AccountEntity> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Set<AccountEntity> accounts) {
+        this.accounts = accounts;
+    }
 
     public AdvisorEntity getAdvisor() {
         return advisor;
