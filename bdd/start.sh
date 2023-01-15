@@ -34,7 +34,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   --
 
   CREATE TABLE public.account (
-      id bigint NOT NULL,
+      id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 0 MINVALUE 0 MAXVALUE 999999 CACHE 1 ),
       customer_id bigint NOT NULL,
       balance bigint NOT NULL
   );
@@ -71,8 +71,9 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   --
 
   CREATE TABLE public.transaction (
-      id bigint NOT NULL,
+      id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 0 MINVALUE 0 MAXVALUE 999999 CACHE 1 ),
       date date NOT NULL,
+      amount bigint NOT NULL,
       author bigint NOT NULL,
       account_from bigint NOT NULL,
       account_to bigint NOT NULL
@@ -86,7 +87,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   --
 
   CREATE TABLE public."user" (
-      id bigint NOT NULL,
+      id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 0 MINVALUE 0 MAXVALUE 999999 CACHE 1 ),
       personal_id character(4) NOT NULL,
       username character varying(20) NOT NULL,
       name character varying(20) NOT NULL,
@@ -201,4 +202,35 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   ALTER TABLE ONLY public.customer
       ADD CONSTRAINT fk_user FOREIGN KEY (id) REFERENCES public."user"(id);
+
+  --
+  -- Adding data
+  --
+
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
+      VALUES ('0001', 'minibuz', 'buzelin', 'leo', 'mail', '0000', 'advisor');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
+      VALUES ('0002', 'maks', 'dumerat', 'maxime', 'mail', '0000', 'advisor');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
+      VALUES ('0003', 'lbar', 'barroux', 'leo', 'mail', '0000', 'customer');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
+      VALUES ('0004', 'casi', 'domart', 'guillaume', 'mail', '0000', 'customer');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
+      VALUES ('0005', 'dreccus', 'ricard', 'martin', 'mail', '0000', 'customer');
+  INSERT INTO public.advisor(id)
+      VALUES (0);
+  INSERT INTO public.advisor(id)
+      VALUES (1);
+  INSERT INTO public.customer(id, advisor, parent)
+      VALUES (2, 0, null);
+  INSERT INTO public.customer(id, advisor, parent)
+      VALUES (3, 0, 2);
+  INSERT INTO public.customer(id, advisor, parent)
+      VALUES (4, 1, null);
+  INSERT INTO public.account(customer_id, balance)
+      VALUES (2, 1000);
+  INSERT INTO public.account(customer_id, balance)
+      VALUES (3, 100);
+  INSERT INTO public.account(customer_id, balance)
+      VALUES (4, 500);
 EOSQL
