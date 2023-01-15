@@ -21,7 +21,7 @@ public class AccountsController {
         this.accountsService = accountsService;
     }
 
-    @GetMapping("{userId}")
+    @GetMapping("/{userId}")
     public List<AccountDto> getAccounts(@PathVariable Integer userId) {
         return accountsService.getAccounts(userId);
     }

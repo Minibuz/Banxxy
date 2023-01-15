@@ -36,11 +36,15 @@ public class AccountsServicesImpl implements AccountsService {
         return user instanceof AdvisorEntity;
     }
 
+    private boolean isCustomer(UserEntity user) {
+        return user instanceof CustomerEntity;
+    }
+
     private Set<CustomerEntity> getCustomersFromUser(UserEntity user, int id) {
         if (isAdvisor(user)) {
             var advisor = advisorRepository.findById(id).orElseThrow();
             return advisor.getCustomers();
-        } else if (user instanceof CustomerEntity)
+        } else if (isCustomer(user))
             return Set.of(customerRepository.findById(id).orElseThrow());
         else return Set.of();
     }
@@ -68,7 +72,7 @@ public class AccountsServicesImpl implements AccountsService {
                     new AccountDto("Maxime", "Dumerat", "Christine", "ATTACHED", 100L));
 
         var user = userRepository.findById(userId).orElseThrow();
-        if (!isAdvisor(user))
+        if (isCustomer(user))
             // TODO - replace exception thrown by returning error to api
             throw new IllegalArgumentException("The User is not an advisor");
 
