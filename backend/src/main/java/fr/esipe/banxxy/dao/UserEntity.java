@@ -12,7 +12,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "personal_id", nullable = false)
     private String personId;
@@ -38,11 +38,11 @@ public class UserEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private List<TransactionEntity> transactions;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
