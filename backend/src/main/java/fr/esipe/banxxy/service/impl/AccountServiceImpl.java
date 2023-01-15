@@ -36,10 +36,10 @@ public class AccountServiceImpl implements AccountService {
 
     private Set<CustomerEntity> getCustomersFromUser(UserEntity user, int id) {
         if (isAdvisor(user)) {
-            var advisor = advisorRepository.findById(id).orElseThrow();
+            var advisor = advisorRepository.findById(Integer.toUnsignedLong(id)).orElseThrow();
             return advisor.getCustomers();
         } else if (user instanceof CustomerEntity)
-            return Set.of(customerRepository.findById(id).orElseThrow());
+            return Set.of(customerRepository.findById(Integer.toUnsignedLong(id)).orElseThrow());
         else return Set.of();
     }
 
@@ -51,7 +51,10 @@ public class AccountServiceImpl implements AccountService {
 
         AccountEntity account;
         CustomerEntity customer;
-        var user = userRepository.findById(userId).orElseThrow();
+        System.out.println(userRepository.findAll());
+        System.out.println(advisorRepository.findAll());
+        System.out.println(customerRepository.findAll());
+        var user = userRepository.findById(Integer.toUnsignedLong(userId)).orElseThrow();
         if (user instanceof AdvisorEntity)
             // TODO - replace exception thrown by returning error to api
             throw new IllegalArgumentException("Id should be a Customer, not an Advisor");
@@ -85,6 +88,6 @@ public class AccountServiceImpl implements AccountService {
                 customer.getName(),
                 advisor.getFirstname(),
                 advisor.getName(),
-                account.getBalance());
+                account.getBalance().longValue());
     }
 }
