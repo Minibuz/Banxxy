@@ -1,18 +1,20 @@
 <template>
-      <v-container>
-        <v-row>
-        <v-col cols="7">
-          <searchBar></searchBar>
+  <v-container>
+    <v-row>
+      <v-col cols="7">
 
-          <v-divider></v-divider>
+<!--        <searchBar></searchBar>-->
 
-          <div v-if="selectedRow!=null" class="py-2" >
+        <v-divider></v-divider>
+        <!--selected user -->
+        <v-fade-transition>
+          <div v-if="selectedUser!=null" class="py-2" >
             <v-row
                 align="center"
                 justify="center">
               <v-col cols="6">
-                <div class="pa-2 text-h4">
-                  Utilisateur : {{selectedRow.nom}} {{selectedRow.prenom}}
+                <div class="pa-2 text-h6">
+                  Utilisateur : {{ selectedUser.nom }} {{ selectedUser.prenom }}
                 </div>
               </v-col>
               <v-col
@@ -36,7 +38,7 @@
                   </v-card-text>
 
                   <v-card-text class="text-h4 px-5">
-                    {{selectedRow.balance}} €
+                    {{ selectedUser.balance }} €
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -46,64 +48,190 @@
 
             </v-row>
           </div>
+          </v-fade-transition>
 
-          <v-divider></v-divider>
-          <div class="text-h6"> Utilisateur</div>
-          <EasyDataTable
-              theme-color="#1d90ff"
-              table-class-name="customize-table"
-              :headers="headers"
-              :items="itemsUserTable"
-              :rows-per-page="5"
-              @click-row="selectRow">
+            <v-divider></v-divider>
+            <!--tableau utilisateur-->
+            <div class="text-h6"> Utilisateur</div>
+            <EasyDataTable
+                theme-color="#1d90ff"
+                table-class-name="customize-table"
+                :headers="headers"
+                :items="itemsUserTable"
+                :rows-per-page="5"
+                @click-row="selectUser">
 
-            <template #item-actions="item">
-              <div class="operation-wrapper">
-                <v-icon icon="mdi-delete"  @click="deleteItem(item)"></v-icon>
-              </div>
-            </template>
+              <template #item-actions="item">
+                <div class="operation-wrapper">
+                  <!--deleteItem(item)-->
+                  <v-icon icon="mdi-delete"  @click="openModalDeleteUser(item)"></v-icon>
+                </div>
+              </template>
 
-          </EasyDataTable>
-          <v-divider></v-divider>
+            </EasyDataTable>
+            <v-divider></v-divider>
+
+            <!--tableau compte-->
+            <div class="text-h6"> Compte</div>
+            <EasyDataTable
+                theme-color="#1d90ff"
+                table-class-name="customize-table"
+                :headers="headersCompte"
+                :items="itemsCompteTable"
+                :rows-per-page="10"
+                @click-row="selectCompte"
+            >
+
+              <template #item-actions="item">
+                <div class="operation-wrapper">
+                <searchBar></searchBar>          <v-icon icon="mdi-delete"  @click="openModalDeleteCompte(item)"></v-icon>
+                </div>
+              </template>
+
+            </EasyDataTable>
+
+      </v-col>
+      <!--tableau transaction-->
+      <v-col cols="5">
 
 
-          <div class="text-h6"> Compte</div>
-          <EasyDataTable
-              theme-color="#1d90ff"
-              table-class-name="customize-table"
-              :headers="headersCompte"
-              :items="itemsCompteTable"
-              :rows-per-page="10"
-          >
+        <div class="text-h6"> Transaction</div>
 
-            <template #item-actions="item">
-              <div class="operation-wrapper">
-                <v-icon icon="mdi-delete"  @click="deleteItem(item)"></v-icon>
-              </div>
-            </template>
 
-          </EasyDataTable>
-        </v-col>
-        <v-col cols="5">
-          <div class="text-h6"> Transaction</div>
+        <v-fade-transition>
+          <div v-if="selectedCompte!=null" class="py-2" >
+            <v-row
+                align="center"
+                justify="center">
+              <v-col cols="6">
+                <div class="pa-2 text-h6">
+                  N°Compte : {{ selectedCompte.id_compte }}
+                </div>
+              </v-col>
+              <v-col
+                  v-for="n in 1"
+                  :key="n"
+                  cols="4">
+
+              </v-col>
+              <v-col cols="1">
+                <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
+              </v-col>
+
+            </v-row>
+          </div>
+        </v-fade-transition>
+
+        <v-fade-transition>
           <EasyDataTable
               theme-color="#1d90ff"
               table-class-name="customize-table"
               :headers="headersTransaction"
               :items="itemsTransactionTable"
               :rows-per-page="10"
+
+              v-if="(itemsTransactionTable.length!==0)"
           >
           </EasyDataTable>
-        </v-col>
-        </v-row>
-      </v-container>
+
+          <div v-else>
+            <v-banner
+                lines="one"
+                icon="mdi-checkbook"
+                color="deep-purple-accent-4"
+                class="my-4"
+            >
+              <v-banner-text>
+                Selectionner un compte pour voir les transactions
+              </v-banner-text>
+            </v-banner>
+
+            <div class="text-h5 text-grey-lighten-1 text-center" v-if="!loadingTransaction">Vide</div>
+            <div class="text-center">
+              <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  v-if="loadingTransaction"
+              ></v-progress-circular>
+            </div>
+
+          </div>
+        </v-fade-transition>
+
+      </v-col>
+    </v-row>
+
+
+    <!--modal for delete user-->
+    <v-dialog
+        v-model="dialogDeleteUser"
+        max-width="600"
+    >
+      <v-card>
+        <v-toolbar
+            color="primary">
+          <v-toolbar-title>Suppression de l'utilisateur  {{ selectedUser.nom }}</v-toolbar-title>
+        </v-toolbar>
+
+        <v-card-text>
+          Vous etes sur le point de supprimer l'utilisateur {{selectedUser.nom}}, etes vous sur de supprimer cette utilisateur.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey"  @click="dialogDeleteUser = false">Annuler</v-btn>
+          <v-btn
+              color="danger"
+              variant="text"
+              @click="deleteUser(selectedUser)"
+          >
+            Supprimer
+          </v-btn>
+
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!--modal for delete compte-->
+    <v-dialog
+        v-model="dialogDeleteCompte"
+        max-width="600"
+    >
+      <v-card>
+        <v-toolbar
+            color="primary"
+
+        >
+          <v-toolbar-title>Suppression du compte {{ selectedCompte.id_compte }}</v-toolbar-title>
+        </v-toolbar>
+
+
+        <v-card-text>
+          Vous etes sur le point de supprimer le compte  {{selectedCompte.id_compte}}, etes vous sur de supprimer ce compte.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="grey"  @click="dialogDeleteCompte = false">Annuler</v-btn>
+          <v-btn
+              color="danger"
+              variant="text"
+              @click="dialog = false"
+          >
+            Supprimer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+  </v-container>
 
 </template>
 
 
 <script>
 import { useTheme } from 'vuetify'
-import searchBar from '@/components/SearchBar'
+// import searchBar from '@/components/SearchBar'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
 
 
@@ -111,7 +239,6 @@ import Vue3EasyDataTable from 'vue3-easy-data-table'
 export default {
   setup () {
     const theme = useTheme();
-
 
     const headers = [
       { text: "Identifiant", value: "id" },
@@ -130,16 +257,16 @@ export default {
       { text: "Date", value: "date"},
       { text: "Compte source", value: "source"},
       { text: "Compte destination", value: "destination"},
-      { text: "Montant", value: "destination"},
+      { text: "Montant", value: "amount"},
     ];
 
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les utilisateurs
     const itemsUser = [
-          { id: "client-0001", nom: "client_1", prenom: "vuejs",balance: 30000},
-          { id: "client-0002", nom: "client_2", prenom: "vuejs",balance: 125010},
-          { id: "client-0003", nom: "client_3", prenom: "vuejs",balance: 2545},
-          { id: "client-0004", nom: "client_4", prenom: "vuejs",balance: 100},
-        ];
+      { id: "client-0001", nom: "client_1", prenom: "vuejs",balance: 30000},
+      { id: "client-0002", nom: "client_2", prenom: "vuejs",balance: 125010},
+      { id: "client-0003", nom: "client_3", prenom: "vuejs",balance: 2545},
+      { id: "client-0004", nom: "client_4", prenom: "vuejs",balance: 100},
+    ];
 
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les comptes
     const itemsCompte = [
@@ -154,16 +281,7 @@ export default {
     ];
 
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les transactions
-    const itemsTransaction = [
-      { id_compte: "compte-0001", user: "client_1", id_client: "client-0001", balance: 30000},
-      { id_compte: "compte-0002", user: "client_2", id_client: "client-0002", balance: 125010},
-      { id_compte: "compte-0003", user: "client_3", id_client: "client-0003", balance: 2545},
-      { id_compte: "compte-0004", user: "client_4", id_client: "client-0004" ,balance: 100},
-      { id_compte: "compte-0005", user: "client_3", id_client: "client-0003", balance: 2545},
-      { id_compte: "compte-0006", user: "client_4", id_client: "client-0004" ,balance: 100},
-      { id_compte: "compte-0007", user: "client_3", id_client: "client-0003", balance: 2545},
-      { id_compte: "compte-0008", user: "client_4", id_client: "client-0004" ,balance: 100},
-    ];
+    const itemsTransaction = [];
 
     return {
       theme,headers,headersCompte,headersTransaction,itemsCompte,itemsUser,itemsTransaction,
@@ -171,7 +289,8 @@ export default {
     }
   },
   components: {
-    searchBar,EasyDataTable: Vue3EasyDataTable
+    //searchBar,
+    EasyDataTable: Vue3EasyDataTable
   },
   data () {
     return {
@@ -179,34 +298,153 @@ export default {
       itemsCompteTable : this.itemsCompte,
       itemsTransactionTable : this.itemsTransaction,
       drawer: true,
-      selectedRow: null,
+      selectedUser: null,
+      selectedCompte: null,
       rail: true,
+      dialogDeleteUser: false,
+      dialogDeleteCompte: false,
+      loadingTransaction: false,
     }
   },
   methods: {
-
+    //USER
     //permet de choisir un utilisateur
-    selectRow(item){
-       this.$data.selectedRow = item;
-       this.$data.itemsCompteTable = this.itemsCompte.filter((i) => i.id_client === item.id);
-       console.table(item);
+    selectUser(item){
+      this.$data.selectedUser = item;
+      this.$data.itemsCompteTable = this.itemsCompte.filter((i) => i.id_client === item.id);
+      console.table(item);
     },
+
     //supprime un utilisateur
-    //TODO modale (fenetre) pour demander validation de la suppression
-    //TODO requete back pour suppression
-    deleteItem(val) {
-       console.log(val)
-      this.itemsUserTable= this.itemsUserTable.filter((item) => item.id !== val.id);
+    //TODO requete back pour suppression user
+    async deleteUser(user) {
+      //TODO FETCH REQUEST
+      //check if user is null
+      //probably need to inform user if nothing append but for the moment.. FUCK IT
+      if(user === null) return;
+
+      //prepare Fetch config
+      const config = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        }
+      }
+      //config ready
+      try {
+        //TODO need the api path for delete a user
+        const response = await fetch(`/api/user/${user.id}`,config);
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+
+      //TODO remove this part
+      //console.log(user)
+      //this.itemsUserTable= this.itemsUserTable.filter((item) => item.id !== user.id);
     },
 
     //TODO selectCompte permet de selection un compte et fait un appel a l'api pour récuperer les transactions du compte
+    selectCompte(compte){
+      this.$data.selectedCompte = compte;
+      console.table(compte);
+      //call to the api to get transaction about this account
+      this.GetTransactions(compte)
+    },
+
+    //supprime un Compte
+    //TODO requete back pour suppression Compte
+    async deleteCompte(compte) {
+      //TODO FETCH REQUEST
+      //check if compte is null
+      //probably need to inform user if nothing append but for the moment.. FUCK IT
+      if(compte === null) return;
+
+      //prepare Fetch config
+      const config = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        }
+      }
+      //config ready
+      try {
+        //TODO need the api path for delete an account
+        const response = await fetch(`/api/account/${compte.id_compte}`,config);
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+
+      //TODO remove this part
+      //console.log(compte)
+    },
+
+    async GetTransactions(compte) {
+      //TODO FETCH REQUEST
+      //check if compte is null
+      //probably need to inform user if nothing append but for the moment.. FUCK IT
+      if(compte === null) return;
+
+      //prepare Fetch config
+      const config = {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        }
+      }
+      //config ready
+      try {
+        this.$data.loadingTransaction = true;
+        //TODO need the api path for get transaction from an account
+        const response = await fetch(`/api/transactions/${compte.id_compte}`,config);
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+
+      this.$data.itemsTransactionTable = [
+        { id_transaction: "transaction-0001",date: "2021-11-28", source: "compte_4",destination: "compte_1", amount: 100},
+        { id_transaction: "transaction-0002",date: "2021-11-28", source: "compte_2",destination: "compte_1", amount: 200},
+        { id_transaction: "transaction-0003", date: "2021-11-28",source: "compte_3",destination: "compte_1", amount: 300},
+        { id_transaction: "transaction-0004", date: "2021-11-28",source: "compte_4",destination: "compte_1", amount: 8700},
+        { id_transaction: "transaction-0005", date: "2021-11-28",source: "compte_3",destination: "compte_1", amount: 58},
+        { id_transaction: "transaction-0006", date: "2021-11-28",source: "compte_4",destination: "compte_1", amount: 42},
+        { id_transaction: "transaction-0007", date: "2021-11-28",source: "compte_3",destination: "compte_1", amount: 789},
+        { id_transaction: "transaction-0008", date: "2021-11-28",source: "compte_4",destination: "compte_1", amount: 99},
+      ];
+
+      this.$data.loadingTransaction=false;
+      //TODO remove this part
+      //console.log(compte)
+    },
+
 
     //reset les choix et enleve les filtres
     resetSelectedRows(){
-      this.$data.selectedRow = null;
+      //user
+      this.$data.selectedUser = null;
       this.$data.itemsCompteTable = this.itemsCompte;
 
-    }
+      //transaction
+      this.$data.selectedCompte = null;
+      this.$data.itemsTransactionTable = [];
+
+    },
+
+    openModalDeleteUser(user){
+      this.$data.selectedUser = user;
+      this.$data.dialogDeleteUser = true;
+    },
+
+    openModalDeleteCompte(compte){
+      this.$data.selectedCompte = compte;
+      this.$data.dialogDeleteCompte = true;
+    },
+
   }
 }
 </script>
