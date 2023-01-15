@@ -11,8 +11,11 @@ public class TransactionEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private Date date;
+
+    @Column(name = "amount", nullable = false)
+    private Integer amount;
 
     @ManyToOne
     @JoinColumn(name = "author", nullable = false)
@@ -39,6 +42,14 @@ public class TransactionEntity {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 
     public UserEntity getAuthor() {
