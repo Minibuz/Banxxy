@@ -6,8 +6,8 @@ import java.util.List;
 @Entity
 @Table(name = "account", schema = "public", catalog = "compte")
 public class AccountEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
