@@ -12,10 +12,7 @@ import fr.esipe.banxxy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AccountServiceImpl implements AccountService {
