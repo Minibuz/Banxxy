@@ -22,7 +22,7 @@
                   </div>
 
                   <div class="d-grid gap-2 mt-2">
-                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" @click="handleLogin">Sign in</button>
+                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" @click="handle">Sign in</button>
                   </div>
 
                 </form>
@@ -42,7 +42,7 @@ export default {
   name: 'LoginPage',
   data() {
     return {
-      form: {mail: null, password: null},
+      form: {username: null, password: null},
       errors: {}
     }
   },
@@ -78,6 +78,23 @@ export default {
       }catch (error){
         console.log(error);
       }
+    },
+    handle(){
+      let user = this.$data.form
+      this.$store.dispatch("auth/login", user).then(
+          () => {
+            this.$router.push("/home");
+          },
+          (error) => {
+            this.loading = false;
+            this.message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+          }
+      );
     }
   }
 }
