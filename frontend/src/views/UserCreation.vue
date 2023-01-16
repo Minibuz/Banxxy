@@ -101,8 +101,10 @@ export default {
     passwordRules:[
       v => !! v || "Name is required",
       v => v.length >= 8 || "Password must be more than 8 characters"
-
     ]
+
+
+
   }),
 }
 
