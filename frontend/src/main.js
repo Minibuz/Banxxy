@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import 'vue3-easy-data-table/dist/style.css';
 
 // Vuetify
 import 'vuetify/styles'
@@ -13,6 +13,8 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+
+
 
 const myCustomLightTheme = {
     dark: false,

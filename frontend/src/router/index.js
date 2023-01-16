@@ -21,9 +21,6 @@ const routes = [
         component: () => import('@/views/HomePage.vue'),
         meta: {requiresAuth: false, layout: 'content'}
     },
-    {   path: '/error-404',
-
-    },
     {   path: '/:pathMatch(.*)*',
         name: "error-404",
         component: () => import('@/views/Error404.vue'),
