@@ -1,7 +1,9 @@
 package fr.esipe.banxxy.repository;
 
 import fr.esipe.banxxy.dao.CustomerEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CustomerRepository extends CrudRepository<CustomerEntity, Integer> {
+@Repository
+public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {
 }

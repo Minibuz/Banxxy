@@ -1,135 +1,497 @@
 <template>
-      <v-container>
-        <v-row
-               align="center"
-               justify="center">
-          <v-col
-              v-for="n in 3"
-              :key="n"
-              cols="auto">
-            <v-card
-                class="mx-auto"
-                color="#00000"
+  <v-container>
+    <v-row>
+      <v-col cols="7">
 
-                max-width="344"
+<!--        <searchBar></searchBar>-->
+
+        <v-divider></v-divider>
+        <!--selected user -->
+        <v-fade-transition>
+          <div v-if="selectedUser!=null" class="py-2" >
+            <v-row
+                align="center"
+                justify="center">
+              <v-col cols="6">
+                <div class="pa-2 text-h6">
+                  Utilisateur : {{ selectedUser.nom }} {{ selectedUser.prenom }}
+                </div>
+              </v-col>
+              <v-col
+                  v-for="n in 1"
+                  :key="n"
+                  cols="4">
+
+                <v-card
+                    class="mx-auto"
+                    color="#00000"
+
+                    max-width="344"
+                >
+                  <v-card-text>
+                    <v-list-item>
+                      <template v-slot:prepend>
+                        <v-icon icon="mdi-wallet"></v-icon>
+                      </template>
+                      <v-list-item-title>Balance</v-list-item-title>
+                    </v-list-item>
+                  </v-card-text>
+
+                  <v-card-text class="text-h4 px-5">
+                    {{ selectedUser.balance }} €
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="1">
+                <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
+              </v-col>
+
+            </v-row>
+          </div>
+          </v-fade-transition>
+
+            <v-divider></v-divider>
+            <!--tableau utilisateur-->
+            <div class="text-h6"> Utilisateur</div>
+            <EasyDataTable
+                theme-color="#1d90ff"
+                table-class-name="customize-table"
+                :headers="headers"
+                :items="itemsUserTable"
+                :rows-per-page="5"
+                @click-row="selectUser">
+
+              <template #item-actions="item">
+                <div class="operation-wrapper">
+                  <!--deleteItem(item)-->
+                  <v-icon icon="mdi-delete"  @click="openModalDeleteUser(item)"></v-icon>
+                </div>
+              </template>
+
+            </EasyDataTable>
+            <v-divider></v-divider>
+
+            <!--tableau compte-->
+            <div class="text-h6"> Compte</div>
+            <EasyDataTable
+                theme-color="#1d90ff"
+                table-class-name="customize-table"
+                :headers="headersCompte"
+                :items="itemsCompteTable"
+                :rows-per-page="10"
+                @click-row="selectCompte"
             >
-              <v-card-text>
-                <v-list-item>
-                  <template v-slot:prepend>
-                    <v-icon icon="mdi-wallet"></v-icon>
-                  </template>
-                  <v-list-item-title>Balance</v-list-item-title>
-                </v-list-item>
-              </v-card-text>
 
-              <v-card-text class="text-h4 px-5">
-                €1,455
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+              <template #item-actions="item">
+                <div class="operation-wrapper">
+                <searchBar></searchBar>          <v-icon icon="mdi-delete"  @click="openModalDeleteCompte(item)"></v-icon>
+                </div>
+              </template>
+
+            </EasyDataTable>
+
+      </v-col>
+      <!--tableau transaction-->
+      <v-col cols="5">
 
 
-        <v-table>
-          <thead>
-          <tr>
-            <th class="text-left">
-              Name
-            </th>
-            <th class="text-left">
-              Calories
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr
-              v-for="item in desserts"
-              :key="item.name"
+        <div class="text-h6"> Transaction</div>
+
+
+        <v-fade-transition>
+          <div v-if="selectedCompte!=null" class="py-2" >
+            <v-row
+                align="center"
+                justify="center">
+              <v-col cols="6">
+                <div class="pa-2 text-h6">
+                  N°Compte : {{ selectedCompte.id_compte }}
+                </div>
+              </v-col>
+              <v-col
+                  v-for="n in 1"
+                  :key="n"
+                  cols="4">
+
+              </v-col>
+              <v-col cols="1">
+                <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
+              </v-col>
+
+            </v-row>
+          </div>
+        </v-fade-transition>
+
+        <v-fade-transition>
+          <EasyDataTable
+              theme-color="#1d90ff"
+              table-class-name="customize-table"
+              :headers="headersTransaction"
+              :items="itemsTransactionTable"
+              :rows-per-page="10"
+
+              v-if="(itemsTransactionTable.length!==0)"
           >
-            <td>{{ item.name }}</td>
-            <td>{{ item.calories }}</td>
-          </tr>
-          </tbody>
-        </v-table>
+          </EasyDataTable>
 
-      </v-container>
+          <div v-else>
+            <v-banner
+                lines="one"
+                icon="mdi-checkbook"
+                color="deep-purple-accent-4"
+                class="my-4"
+            >
+              <v-banner-text>
+                Selectionner un compte pour voir les transactions
+              </v-banner-text>
+            </v-banner>
+
+            <div class="text-h5 text-grey-lighten-1 text-center" v-if="!loadingTransaction">Vide</div>
+            <div class="text-center">
+              <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  v-if="loadingTransaction"
+              ></v-progress-circular>
+            </div>
+
+          </div>
+        </v-fade-transition>
+
+      </v-col>
+    </v-row>
+
+
+    <!--modal for delete user-->
+    <v-dialog
+        v-model="dialogDeleteUser"
+        max-width="600"
+    >
+      <v-card>
+        <v-toolbar
+            color="primary">
+          <v-toolbar-title>Suppression de l'utilisateur  {{ selectedUser.nom }}</v-toolbar-title>
+        </v-toolbar>
+
+        <v-card-text>
+          Vous etes sur le point de supprimer l'utilisateur {{selectedUser.nom}}, etes vous sur de supprimer cette utilisateur.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey"  @click="dialogDeleteUser = false">Annuler</v-btn>
+          <v-btn
+              color="danger"
+              variant="text"
+              @click="deleteUser(selectedUser)"
+          >
+            Supprimer
+          </v-btn>
+
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!--modal for delete compte-->
+    <v-dialog
+        v-model="dialogDeleteCompte"
+        max-width="600"
+    >
+      <v-card>
+        <v-toolbar
+            color="primary"
+
+        >
+          <v-toolbar-title>Suppression du compte {{ selectedCompte.id_compte }}</v-toolbar-title>
+        </v-toolbar>
+
+
+        <v-card-text>
+          Vous etes sur le point de supprimer le compte  {{selectedCompte.id_compte}}, etes vous sur de supprimer ce compte.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="grey"  @click="dialogDeleteCompte = false">Annuler</v-btn>
+          <v-btn
+              color="danger"
+              variant="text"
+              @click="dialog = false"
+          >
+            Supprimer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+  </v-container>
 
 </template>
 
 
 <script>
 import { useTheme } from 'vuetify'
+// import searchBar from '@/components/SearchBar'
+import Vue3EasyDataTable from 'vue3-easy-data-table'
+
+
+
 export default {
   setup () {
-    const theme = useTheme()
+    const theme = useTheme();
+
+    const headers = [
+      { text: "Identifiant", value: "id" },
+      { text: "NOM", value: "nom"},
+      { text: "PRENOM", value: "prenom"},
+      { text: "ACTIONS", value: "actions"},
+    ];
+    const headersCompte = [
+      { text: "N°Compte", value: "id_compte" },
+      { text: "Détenteur", value: "user"},
+      { text: "solde", value: "balance"},
+      { text: "ACTIONS", value: "actions"},
+    ];
+    const headersTransaction = [
+      { text: "N° Transaction", value: "id_transaction" },
+      { text: "Date", value: "date"},
+      { text: "Compte source", value: "source"},
+      { text: "Compte destination", value: "destination"},
+      { text: "Montant", value: "amount"},
+    ];
+
+    //TODO pour le moment static mais sera remplacer par une requete qui recupere les utilisateurs
+    const itemsUser = [
+      { id: "client-0001", nom: "client_1", prenom: "vuejs",balance: 30000},
+      { id: "client-0002", nom: "client_2", prenom: "vuejs",balance: 125010},
+      { id: "client-0003", nom: "client_3", prenom: "vuejs",balance: 2545},
+      { id: "client-0004", nom: "client_4", prenom: "vuejs",balance: 100},
+    ];
+
+    //TODO pour le moment static mais sera remplacer par une requete qui recupere les comptes
+    const itemsCompte = [
+      { id_compte: "compte-0001", user: "client_1", id_client: "client-0001", balance: 30000},
+      { id_compte: "compte-0002", user: "client_2", id_client: "client-0002", balance: 125010},
+      { id_compte: "compte-0003", user: "client_3", id_client: "client-0003", balance: 2545},
+      { id_compte: "compte-0004", user: "client_4", id_client: "client-0004" ,balance: 100},
+      { id_compte: "compte-0005", user: "client_3", id_client: "client-0003", balance: 2545},
+      { id_compte: "compte-0006", user: "client_4", id_client: "client-0004" ,balance: 100},
+      { id_compte: "compte-0007", user: "client_3", id_client: "client-0003", balance: 2545},
+      { id_compte: "compte-0008", user: "client_4", id_client: "client-0004" ,balance: 100},
+    ];
+
+    //TODO pour le moment static mais sera remplacer par une requete qui recupere les transactions
+    const itemsTransaction = [];
+
     return {
-      theme,
+      theme,headers,headersCompte,headersTransaction,itemsCompte,itemsUser,itemsTransaction,
       toggleTheme: () => theme.global.name.value = theme.global.current.value.dark ? 'myCustomLightTheme' : 'dark'
     }
   },
+  components: {
+    //searchBar,
+    EasyDataTable: Vue3EasyDataTable
+  },
   data () {
     return {
+      itemsUserTable : this.itemsUser,
+      itemsCompteTable : this.itemsCompte,
+      itemsTransactionTable : this.itemsTransaction,
       drawer: true,
-      items: [
-        { title: 'Home', icon: 'mdi-home-city' },
-        { title: 'My Account', icon: 'mdi-account' },
-        { title: 'Users', icon: 'mdi-account-group-outline' },
-      ],
-
-      user : {firstname: 'Remi', lastname: 'Forax'},
+      selectedUser: null,
+      selectedCompte: null,
       rail: true,
-      desserts: [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-        },
-      ],
+      dialogDeleteUser: false,
+      dialogDeleteCompte: false,
+      loadingTransaction: false,
     }
   },
   methods: {
-     userName(){
-        return this.$data.user.firstname +" "+this.$data.user.lastname;
-     },
+    //USER
+    //permet de choisir un utilisateur
+    selectUser(item){
+      this.$data.selectedUser = item;
+      this.$data.itemsCompteTable = this.itemsCompte.filter((i) => i.id_client === item.id);
+      console.table(item);
+    },
+
+    //supprime un utilisateur
+    //TODO requete back pour suppression user
+    async deleteUser(user) {
+      //TODO FETCH REQUEST
+      //check if user is null
+      //probably need to inform user if nothing append but for the moment.. FUCK IT
+      if(user === null) return;
+
+      //prepare Fetch config
+      const config = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        }
+      }
+      //config ready
+      try {
+        //TODO need the api path for delete a user
+        const response = await fetch(`/api/user/${user.id}`,config);
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+
+      //TODO remove this part
+      //console.log(user)
+      //this.itemsUserTable= this.itemsUserTable.filter((item) => item.id !== user.id);
+    },
+
+    //TODO selectCompte permet de selection un compte et fait un appel a l'api pour récuperer les transactions du compte
+    selectCompte(compte){
+      this.$data.selectedCompte = compte;
+      console.table(compte);
+      //call to the api to get transaction about this account
+      this.GetTransactions(compte)
+    },
+
+    //supprime un Compte
+    //TODO requete back pour suppression Compte
+    async deleteCompte(compte) {
+      //TODO FETCH REQUEST
+      //check if compte is null
+      //probably need to inform user if nothing append but for the moment.. FUCK IT
+      if(compte === null) return;
+
+      //prepare Fetch config
+      const config = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        }
+      }
+      //config ready
+      try {
+        //TODO need the api path for delete an account
+        const response = await fetch(`/api/account/${compte.id_compte}`,config);
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+
+      //TODO remove this part
+      //console.log(compte)
+    },
+
+    async GetTransactions(compte) {
+      //TODO FETCH REQUEST
+      //check if compte is null
+      //probably need to inform user if nothing append but for the moment.. FUCK IT
+      if(compte === null) return;
+
+      //prepare Fetch config
+      const config = {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.$store.state.token}`
+        }
+      }
+      //config ready
+      try {
+        this.$data.loadingTransaction = true;
+        //TODO need the api path for get transaction from an account
+        const response = await fetch(`/api/transactions/${compte.id_compte}`,config);
+        const { results: data } = await response.json()
+        console.log(data)
+      }catch (error){
+        console.log(error);
+      }
+
+      this.$data.itemsTransactionTable = [
+        { id_transaction: "transaction-0001",date: "2021-11-28", source: "compte_4",destination: "compte_1", amount: 100},
+        { id_transaction: "transaction-0002",date: "2021-11-28", source: "compte_2",destination: "compte_1", amount: 200},
+        { id_transaction: "transaction-0003", date: "2021-11-28",source: "compte_3",destination: "compte_1", amount: 300},
+        { id_transaction: "transaction-0004", date: "2021-11-28",source: "compte_4",destination: "compte_1", amount: 8700},
+        { id_transaction: "transaction-0005", date: "2021-11-28",source: "compte_3",destination: "compte_1", amount: 58},
+        { id_transaction: "transaction-0006", date: "2021-11-28",source: "compte_4",destination: "compte_1", amount: 42},
+        { id_transaction: "transaction-0007", date: "2021-11-28",source: "compte_3",destination: "compte_1", amount: 789},
+        { id_transaction: "transaction-0008", date: "2021-11-28",source: "compte_4",destination: "compte_1", amount: 99},
+      ];
+
+      this.$data.loadingTransaction=false;
+      //TODO remove this part
+      //console.log(compte)
+    },
+
+
+    //reset les choix et enleve les filtres
+    resetSelectedRows(){
+      //user
+      this.$data.selectedUser = null;
+      this.$data.itemsCompteTable = this.itemsCompte;
+
+      //transaction
+      this.$data.selectedCompte = null;
+      this.$data.itemsTransactionTable = [];
+
+    },
+
+    openModalDeleteUser(user){
+      this.$data.selectedUser = user;
+      this.$data.dialogDeleteUser = true;
+    },
+
+    openModalDeleteCompte(compte){
+      this.$data.selectedCompte = compte;
+      this.$data.dialogDeleteCompte = true;
+    },
+
   }
 }
 </script>
 
-<style scoped>
+<style>
 
+
+.customize-table {
+  --easy-table-border: 1px solid #445269;
+  --easy-table-row-border: 1px solid #445269;
+
+  --easy-table-header-font-size: 14px;
+  --easy-table-header-height: 50px;
+  --easy-table-header-font-color: #c1cad4;
+  --easy-table-header-background-color: #2d3a4f;
+
+  --easy-table-header-item-padding: 10px 15px;
+
+  --easy-table-body-even-row-font-color: #fff;
+  --easy-table-body-even-row-background-color: #4c5d7a;
+
+  --easy-table-body-row-font-color: #c0c7d2;
+  --easy-table-body-row-background-color: #2d3a4f;
+  --easy-table-body-row-height: 50px;
+  --easy-table-body-row-font-size: 14px;
+
+  --easy-table-body-row-hover-font-color: #2d3a4f;
+  --easy-table-body-row-hover-background-color: #eee;
+
+  --easy-table-body-item-padding: 10px 15px;
+
+  --easy-table-footer-background-color: #2d3a4f;
+  --easy-table-footer-font-color: #c0c7d2;
+  --easy-table-footer-font-size: 14px;
+  --easy-table-footer-padding: 0px 10px;
+  --easy-table-footer-height: 50px;
+
+  --easy-table-rows-per-page-selector-width: 70px;
+  --easy-table-rows-per-page-selector-option-padding: 10px;
+  --easy-table-rows-per-page-selector-z-index: 1;
+
+
+  --easy-table-scrollbar-track-color: #2d3a4f;
+  --easy-table-scrollbar-color: #2d3a4f;
+  --easy-table-scrollbar-thumb-color: #4c5d7a;;
+  --easy-table-scrollbar-corner-color: #2d3a4f;
+
+  --easy-table-loading-mask-background-color: #2d3a4f;
+}
 </style>
