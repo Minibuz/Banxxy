@@ -1,9 +1,9 @@
 import AuthService from '../services/auth.service';
 
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user
-    ? { status: { loggedIn: true }, user }
-    : { status: { loggedIn: false }, user: null };
+const user_info = JSON.parse(localStorage.getItem('user'));
+const initialState = user_info
+    ? { status: { loggedIn: true }, user_info }
+    : { status: { loggedIn: false }, user_info: null };
 
 export const auth = {
     namespaced: true,

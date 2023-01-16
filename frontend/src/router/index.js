@@ -37,7 +37,7 @@ const router = createRouter({
     routes, // short for `routes: routes`
 })
 
-router.beforeEach(async(to,from,next)=>{
+router.beforeEach((to,from,next)=>{
     //let now = Date.now();
     //let default_time_out=600;
     const loggedIn = localStorage.getItem('user');

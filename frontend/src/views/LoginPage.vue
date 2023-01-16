@@ -80,7 +80,7 @@ export default {
       }
     },
     handle(){
-      let user = this.$data.form
+      const user = this.$data.form
       this.$store.dispatch("auth/login", user).then(
           () => {
             this.$router.push("/home");
