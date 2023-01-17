@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping("/all/{userId}")
     public List<UserDto> getDependantUser(@PathVariable Long userId) {
         return userService.getDependantUser(userId);
-    };
+    }
 
 
     @PostMapping("/customer/create")
@@ -35,7 +35,7 @@ public class UserController {
         return created.map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
-    @GetMapping("/{userId")
+    @GetMapping("/{userId}")
     public UserDetailDto getUser(@PathVariable Long userId) {
         return userService.getUser(userId);
     }
