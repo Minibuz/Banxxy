@@ -3,6 +3,8 @@ package fr.esipe.banxxy.controller;
 import fr.esipe.banxxy.dto.UserDto;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public List<UserDto> getDependantUser(@PathVariable Long userId) {
-        return userService.getDependantUser(userId);
-    };
+    public ResponseEntity<List<UserDto>> getDependantUser(@PathVariable Long userId) {
+        var users = userService.getDependantUser(userId);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 }
