@@ -1,12 +1,11 @@
 package fr.esipe.banxxy.controller;
 
+import fr.esipe.banxxy.dto.UserDetailDto;
 import fr.esipe.banxxy.dto.UserDto;
+import fr.esipe.banxxy.dto.UserReceivedDto;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,8 +20,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/all/{userId}")
     public List<UserDto> getDependantUser(@PathVariable Long userId) {
         return userService.getDependantUser(userId);
     };
+
+
+    @PostMapping("/customer/create")
+    public void createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
+        userService.createUser(userReceivedDto);
+    }
+
+    @GetMapping("/{userId")
+    public UserDetailDto getUser(@PathVariable Long userId) {
+        return userService.getUser(userId);
+    }
 }
