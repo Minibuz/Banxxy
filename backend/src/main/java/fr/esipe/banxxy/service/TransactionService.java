@@ -5,9 +5,9 @@ import fr.esipe.banxxy.dto.TransactionDto;
 import java.util.List;
 
 public interface TransactionService {
-    List<TransactionDto> getTransactionList(Integer accountId, Integer userId);
+    List<TransactionDto> getTransactionList(Long accountId, Long userId);
 
-    Integer getNbTransactions(Integer userId);
+    Integer getNbTransactions(Long userId);
 
 
     Boolean saveTransaction(TransactionDto transactionDto);

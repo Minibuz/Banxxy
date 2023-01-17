@@ -10,6 +10,7 @@ import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDto> getTransactionList(Integer accountId, Integer userId) {
+    public List<TransactionDto> getTransactionList(Long accountId, Long userId) {
         var user = userRepository.findById(userId).orElseThrow();
         var account = accountRepository.findById(accountId).orElseThrow();
         var transactions = user.getTransactions().stream().filter(transaction -> transaction.getAccountFrom().equals(account) || transaction.getAccountTo().equals(account)).toList();
@@ -58,7 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Integer getNbTransactions(Integer userId) {
+    public Integer getNbTransactions(Long userId) {
         var user = userRepository.findById(userId).orElseThrow();
         if (!isAdvisor(user))
             return 0;
@@ -101,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
                  accountTo.getCustomer().getAdvisor().getId() != user.getId()))
             return false;
 
-        if (accountFrom.getBalance() - amount < 0L){
+        if (accountFrom.getBalance().subtract(BigInteger.valueOf(amount)).compareTo(BigInteger.ZERO) == -1){
             return false;
         }
         var transactionEntity = new TransactionEntity();
@@ -111,8 +112,8 @@ public class TransactionServiceImpl implements TransactionService {
         transactionEntity.setDate(date);
         transactionEntity.setAuthor(user);
 
-        accountFrom.setBalance(accountFrom.getBalance() - amount);
-        accountTo.setBalance(accountTo.getBalance() + amount);
+        accountFrom.setBalance(accountFrom.getBalance().subtract(BigInteger.valueOf(amount)));
+        accountTo.setBalance(accountTo.getBalance().add(BigInteger.valueOf(amount)));
 
         //save entity in Data Base
         accountRepository.save(accountFrom);
