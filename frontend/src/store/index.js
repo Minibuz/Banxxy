@@ -1,5 +1,6 @@
 // Create a new store instance.
 import {createStore} from "vuex";
+import { auth } from "./auth.module";
 
 const store = createStore({
     state () {
@@ -30,7 +31,10 @@ const store = createStore({
             state.role = null;
             state.timeout = null;
         }
-    }
+    },
+    modules: {
+        auth,
+    },
 });
 
 export default store;

@@ -1,22 +1,23 @@
 package fr.esipe.banxxy.dao;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 @Entity
 @Table(name = "account", schema = "public", catalog = "compte")
 public class AccountEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
     @Column(name = "balance", nullable = false)
-    private Long balance;
+    private BigInteger balance;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountFrom")
     private List<TransactionEntity> transactionsFrom;
@@ -27,11 +28,11 @@ public class AccountEntity {
     public AccountEntity() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,11 +44,11 @@ public class AccountEntity {
         this.customer = customer;
     }
 
-    public Long getBalance() {
+    public BigInteger getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(BigInteger balance) {
         this.balance = balance;
     }
 
