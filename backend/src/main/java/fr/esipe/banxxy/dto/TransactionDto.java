@@ -3,24 +3,32 @@ package fr.esipe.banxxy.dto;
 public class TransactionDto {
     private  Integer amount;
     private  String author;
-    private  Integer authorId;
-    private  Integer account_from;
-    private  Integer account_to;
+    private  Long authorId;
+    private  Long account_from;
+    private  Long account_to;
     private   String date;
 
-    public TransactionDto(Integer amount, String author, Integer account_from, Integer account_to, String date){
+    public void setAmount(Integer amount) {
         this.amount = amount;
-        this.author = author;
-        this.account_from = account_from;
-        this.account_to = account_to;
-        this.date = date;
     }
 
-    public TransactionDto(Integer amount, Integer authorId, Integer account_from, Integer account_to, String date){
-        this.amount = amount;
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    public void setAccount_from(Long account_from) {
         this.account_from = account_from;
+    }
+
+    public void setAccount_to(Long account_to) {
         this.account_to = account_to;
+    }
+
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -32,14 +40,15 @@ public class TransactionDto {
         return author;
     }
 
-    public Integer getAccount_from() {
+    public Long getAccount_from() {
         return account_from;
     }
 
-    public Integer getAccount_to() {
+    public Long getAccount_to() {
         return account_to;
     }
-    public Integer getAuthorId(){ return authorId; }
+    
+    public Long getAuthorId(){ return authorId; }
 
     public String getDate(){ return date; }
 }
