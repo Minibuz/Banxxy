@@ -42,52 +42,39 @@ public class AccountsServicesImpl implements AccountsService {
 
     private Set<CustomerEntity> getCustomersFromUser(UserEntity user, int id) {
         if (isAdvisor(user)) {
-            var advisor = advisorRepository.findById(id).orElseThrow();
+            // TODO - replace exception thrown by returning error to api
+            var advisor = advisorRepository.findById((long) id).orElseThrow();
             return advisor.getCustomers();
         } else if (isCustomer(user))
-            return Set.of(customerRepository.findById(id).orElseThrow());
+            // TODO - replace exception thrown by returning error to api
+            return Set.of(customerRepository.findById((long) id).orElseThrow());
         else return Set.of();
     }
 
     @Override
     public List<AccountDto> getAccounts(Integer userId) {
-        // TODO - remove, only for test
-        if (userId == 0)
-            return List.of(new AccountDto("Léo", "Barroux", "Christine", "LeMaraicher", 100L),
-                    new AccountDto("Maxime", "Dumerat", "Christine", "LeMaraicher", 100L));
-
-        var user = userRepository.findById(userId).orElseThrow();
+        var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
+        // TODO - replace exception thrown by returning error to api
         if (isAdvisor(user))
             // TODO - replace exception thrown by returning error to api
             throw new IllegalArgumentException("The User is not a Customer");
-
         return getAllAccounts(userId);
     }
 
     @Override
     public List<AccountDto> getAttachedAccounts(Integer userId) {
-        // TODO - remove, only for test
-        if (userId == 0)
-            return List.of(new AccountDto("Léo", "Barroux", "Christine", "LeMaraicher", 100L),
-                    new AccountDto("Maxime", "Dumerat", "Christine", "ATTACHED", 100L));
-
-        var user = userRepository.findById(userId).orElseThrow();
+        // TODO - replace exception thrown by returning error to api
+        var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
         if (isCustomer(user))
             // TODO - replace exception thrown by returning error to api
             throw new IllegalArgumentException("The User is not an advisor");
-
         return getAllAccounts(userId);
     }
 
     @Override
     public List<AccountDto> getAllAccounts(Integer userId) {
-        // TODO - remove, only for test
-        if (userId == 0)
-            return List.of(new AccountDto("Léo", "Barroux", "Christine", "LeMaraicher", 100L),
-                    new AccountDto("Maxime", "Dumerat", "Christine", "ALL", 100L));
-
-        var user = userRepository.findById(userId).orElseThrow();
-
+        // TODO - replace exception thrown by returning error to api
+        var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
         var accountList = new ArrayList<AccountDto>();
         Set<CustomerEntity> customers = getCustomersFromUser(user, userId);
         if (customers.isEmpty())
@@ -99,10 +86,9 @@ public class AccountsServicesImpl implements AccountsService {
                         account.getCustomer().getName(),
                         account.getCustomer().getAdvisor().getFirstname(),
                         account.getCustomer().getAdvisor().getName(),
-                        account.getBalance()
+                        account.getBalance().longValue()
                 )
         )));
-
         return accountList;
     }
 }
