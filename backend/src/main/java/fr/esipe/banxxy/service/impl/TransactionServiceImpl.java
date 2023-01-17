@@ -49,11 +49,12 @@ public class TransactionServiceImpl implements TransactionService {
 
        var transactionDtoList = new ArrayList<TransactionDto>();
        transactions.forEach(transaction ->{
-           transactionDtoList.add(new TransactionDto(transaction.getAmount(),
-                   transaction.getAuthor().getUsername(),
-                   transaction.getAccountFrom().getId(),
-                   transaction.getAccountTo().getId(),
-                   transaction.getDate().toString()));
+           var transactionDto = new TransactionDto();
+           transactionDto.setAuthor(transaction.getAuthor().getName());
+           transactionDto.setAccount_from(transaction.getAccountFrom().getId());
+           transactionDto.setAccount_to(transaction.getAccountTo().getId());
+           transactionDto.setDate(transaction.getDate().toString());
+           transactionDtoList.add(transactionDto);
        });
        return transactionDtoList;
     }
