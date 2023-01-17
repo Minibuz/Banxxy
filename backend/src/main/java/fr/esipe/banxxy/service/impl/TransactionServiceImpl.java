@@ -67,20 +67,20 @@ public class TransactionServiceImpl implements TransactionService {
         var user = userRepository.findById(userId).orElseThrow();
         if (!isAdvisor(user))
             return 0;
-        if (!isCustomer(user))
+        if (isCustomer(user))
             return  0;
         var advisor = advisorRepository.findById(userId).orElseThrow();
         var customers = advisor.getCustomers();
         if (customers.isEmpty())
             throw new NoSuchElementException("No customer found for this user");
-        Long nbTransaction = 0L;
+
+        Integer nbTransaction = 0;
         for (var customer : customers) {
             nbTransaction += customer.getAccounts().stream()
-                    .map(accountEntity -> accountEntity.getTransactionsFrom().stream()
-                            .count())
-                    .reduce(0L, Long::sum);
+                    .map(accountEntity -> accountEntity.getTransactionsFrom().size())
+                    .reduce(0, Integer::sum);
         }
-        return nbTransaction.intValue();
+        return nbTransaction;
     }
 
     @Override
