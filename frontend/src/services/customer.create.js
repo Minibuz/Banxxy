@@ -9,15 +9,13 @@ class CreateCustomer{
                 lastName: customer.lastName,
                 email: customer.email,
                 username: customer.username,
-                password: customer.password
+                password: customer.password,
+                advisorId: customer.advisorId
             }})
             .then(response => {
-                if (! response.ok){
-                    // get error message from body or default to response status
-                    const error = (data && data.message) || response.status;
-                    return Promise.reject(error);
+                if (response.ok){
+                    console.log("successful",response)
                 }
-                return response.data;
             })
             .catch(error => {
                 console.error("This is an error",error);
