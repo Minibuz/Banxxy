@@ -1,6 +1,5 @@
 package fr.esipe.banxxy.controller;
 
-import fr.esipe.banxxy.dto.AccountDto;
 import fr.esipe.banxxy.dto.TransactionDto;
 import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
