@@ -38,6 +38,10 @@ public class UserEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private List<TransactionEntity> transactions;
 
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ERole role;
+
     public Long getId() {
         return id;
     }
@@ -108,5 +112,13 @@ public class UserEntity {
 
     public void setTransactions(List<TransactionEntity> transactions) {
         this.transactions = transactions;
+    }
+
+    public ERole getRole() {
+        return role;
+    }
+
+    public void setRole(ERole role) {
+        this.role = role;
     }
 }
