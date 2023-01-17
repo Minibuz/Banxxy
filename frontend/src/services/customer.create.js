@@ -1,6 +1,6 @@
-const API_URL = '/api/advisor/create/';
+const API_URL = '/api/customer/create/';
 
-class CreateUser{
+class CreateCustomer{
     static create(customer){
         return fetch(`${API_URL}customer`,{
             method: 'POST',
@@ -12,12 +12,17 @@ class CreateUser{
                 password: customer.password
             }})
             .then(response => {
-                if (response.data.accessToken){
-                    localStorage.setItem('customer',JSON.stringify(response.data));
+                if (! response.ok){
+                    // get error message from body or default to response status
+                    const error = (data && data.message) || response.status;
+                    return Promise.reject(error);
                 }
                 return response.data;
+            })
+            .catch(error => {
+                console.error("This is an error",error);
             });
     }
 }
 
-export default CreateUser;
+export default CreateCustomer;

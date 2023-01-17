@@ -29,7 +29,7 @@ const routes = [
     {
         path: '/userCreation',
         name: 'userCreation',
-        component: () => import('@/views/UserCreation'),
+        component: () => import('@/views/CustomerCreation'),
         meta: {requiresAuth: false, layout: 'content'}
     },
 ]
