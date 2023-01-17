@@ -50,5 +50,6 @@ public class TransactionDto {
     }
     public Long getAuthorId(){ return authorId; }
 
+
     public String getDate(){ return date; }
 }
