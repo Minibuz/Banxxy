@@ -1,6 +1,7 @@
 package fr.esipe.banxxy.service.impl;
 
 import fr.esipe.banxxy.dao.AdvisorEntity;
+import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.TransactionEntity;
 import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.TransactionDto;
@@ -35,6 +36,9 @@ public class TransactionServiceImpl implements TransactionService {
     private boolean isAdvisor(UserEntity user) {
         return user instanceof AdvisorEntity;
     }
+    private boolean isCustomer(UserEntity user) {
+        return user instanceof CustomerEntity;
+    }
 
     @Override
     public List<TransactionDto> getTransactionList(Integer accountId, Integer userId) {
@@ -58,6 +62,8 @@ public class TransactionServiceImpl implements TransactionService {
         var user = userRepository.findById(userId).orElseThrow();
         if (!isAdvisor(user))
             return 0;
+        if (!isCustomer(user))
+            return  0;
         var advisor = advisorRepository.findById(userId);
         var customers = advisor.get().getCustomers();
         if (customers.isEmpty())
@@ -83,6 +89,17 @@ public class TransactionServiceImpl implements TransactionService {
         var user = userRepository.findById(authorId).orElseThrow();
         var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
         var accountTo  = accountRepository.findById(account_toId).orElseThrow();
+
+        if (!isCustomer(user)|| !isAdvisor(user))
+            return false;
+
+        if (isCustomer(user) && accountFrom.getCustomer().getId() != user.getId())
+            return false;
+
+        if (isAdvisor(user) &&
+                (accountFrom.getCustomer().getAdvisor().getId() != user.getId() ||
+                 accountTo.getCustomer().getAdvisor().getId() != user.getId()))
+            return false;
 
         if (accountFrom.getBalance() - amount < 0L){
             return false;
