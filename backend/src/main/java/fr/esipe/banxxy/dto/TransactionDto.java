@@ -5,6 +5,7 @@ public class TransactionDto {
     private  String author;
     private  Long authorId;
     private  Long account_from;
+    private  Long account_to;
 
     public void setAmount(Integer amount) {
         this.amount = amount;
@@ -29,8 +30,7 @@ public class TransactionDto {
     public void setDate(String date) {
         this.date = date;
     }
-
-    private  Long account_to;
+    
     private   String date;
 
     public Integer getAmount() {
