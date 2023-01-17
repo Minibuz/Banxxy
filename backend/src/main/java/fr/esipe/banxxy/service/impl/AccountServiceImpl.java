@@ -12,7 +12,10 @@ import fr.esipe.banxxy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -45,10 +48,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDto getAccountDetails(Integer accountId, Integer userId) {
-        // TODO - remove, only for test
-        if (userId == 0)
-            return new AccountDto("Léo", "Barroux", "Christine", "LeMaraicher", 100L);
-
         AccountEntity account;
         CustomerEntity customer;
         System.out.println(userRepository.findAll());
@@ -66,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
             account = customers.stream()
                     .map(CustomerEntity::getAccounts)
                     .flatMap(Collection::stream)
-                    .filter(acc -> Objects.equals(acc.getId(), accountId))
+                    .filter(acc -> Objects.equals(acc.getId(), accountId.longValue()))
                     .findFirst()
                     .orElse(null);
             if (account == null)
@@ -76,7 +75,7 @@ public class AccountServiceImpl implements AccountService {
         } else {
             customer = customers.iterator().next();
             account = customer.getAccounts().stream()
-                    .filter(acc -> Objects.equals(acc.getId(), accountId))
+                    .filter(acc -> Objects.equals(acc.getId(), accountId.longValue()))
                     .findFirst()
                     .orElse(null);
             if (account == null)
