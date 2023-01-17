@@ -4,10 +4,7 @@ import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.TransactionEntity;
 import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.TransactionDto;
-import fr.esipe.banxxy.repository.AccountRepository;
-import fr.esipe.banxxy.repository.AdvisorRepository;
-import fr.esipe.banxxy.repository.CustomerRepository;
-import fr.esipe.banxxy.repository.UserRepository;
+import fr.esipe.banxxy.repository.*;
 import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,15 +23,17 @@ public class TransactionServiceImpl implements TransactionService {
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
+    private  final TransactionRepository transactionRepository;
 
     @Autowired
     public TransactionServiceImpl(UserRepository userRepository,
                                   AdvisorRepository advisorRepository,
-                                  CustomerRepository customerRepository, AccountRepository accountRepository) {
+                                  CustomerRepository customerRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
     private boolean isAdvisor(UserEntity user) {
         return user instanceof AdvisorEntity;
@@ -79,7 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionDto getTransactionValidation(Integer amount, Integer authorId, Integer account_fromId, Integer account_toId) {
         var date = new Date(System.currentTimeMillis());
-        
+
         var user = userRepository.findById(authorId).orElseThrow();
         var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
         var accountTo  = accountRepository.findById(account_toId).orElseThrow();
@@ -96,6 +95,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         accountFrom.setBalance(accountFrom.getBalance() - amount);
         accountTo.setBalance(accountTo.getBalance() + amount);
+
+        //save entity in Data Base
+        accountRepository.save(accountFrom);
+        accountRepository.save(accountTo);
+        transactionRepository.save(transactionEntity);
 
         return new TransactionDto(amount, user.getName(), account_fromId, account_toId, date.toString());
 
