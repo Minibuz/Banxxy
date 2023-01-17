@@ -1,24 +1,20 @@
 package fr.esipe.banxxy.controller;
 
-import fr.esipe.banxxy.service.TestService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping("/api")
 public class TestController {
 
-    private final TestService service;
-
-    @Autowired
-    TestController(TestService service) {
-        this.service = service;
-    }
-
     @ResponseBody
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
-    public String all() {
-        return "Shit work";
+    public ResponseEntity<String> all() {
+        return new ResponseEntity<>("Shit work", HttpStatus.OK);
     }
 }
