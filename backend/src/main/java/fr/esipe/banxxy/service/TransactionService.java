@@ -10,5 +10,5 @@ public interface TransactionService {
     Integer getNbTransactions(Integer userId);
 
 
-    TransactionDto getTransactionValidation(Integer amount, Integer authorId, Integer account_fromId, Integer account_toId);
+    Boolean saveTransaction(TransactionDto transactionDto);
 }

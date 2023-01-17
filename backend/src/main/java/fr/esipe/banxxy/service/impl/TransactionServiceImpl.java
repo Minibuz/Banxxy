@@ -73,15 +73,19 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionDto getTransactionValidation(Integer amount, Integer authorId, Integer account_fromId, Integer account_toId) {
-        var date = new Date(System.currentTimeMillis());
+    public Boolean saveTransaction(TransactionDto transactionDto) {
+        var date = Date.valueOf(transactionDto.getDate());
+        var amount = transactionDto.getAmount();
+        var account_fromId = transactionDto.getAccount_from();
+        var account_toId = transactionDto.getAccount_to();
+        var authorId = transactionDto.getAuthorId();
 
         var user = userRepository.findById(authorId).orElseThrow();
         var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
         var accountTo  = accountRepository.findById(account_toId).orElseThrow();
 
         if (accountFrom.getBalance() - amount < 0L){
-            return null;
+            return false;
         }
         var transactionEntity = new TransactionEntity();
         transactionEntity.setAmount(amount);
@@ -98,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.save(accountTo);
         transactionRepository.save(transactionEntity);
 
-        return new TransactionDto(amount, user.getName(), account_fromId, account_toId, date.toString());
+        return true;
 
     }
 }

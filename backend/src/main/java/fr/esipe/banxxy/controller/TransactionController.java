@@ -3,10 +3,7 @@ package fr.esipe.banxxy.controller;
 import fr.esipe.banxxy.dto.TransactionDto;
 import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,11 +27,8 @@ public class TransactionController {
         return transactionService.getNbTransactions(userId);
     }
 
-    @GetMapping("/{amount}/{authorId}/{accountFromId}/{accountToId}")
-    public TransactionDto getTransaction(@PathVariable Integer amount,
-                                         @PathVariable Integer authorId,
-                                         @PathVariable Integer accountFromId,
-                                         @PathVariable Integer accountToId){
-        return transactionService.getTransactionValidation(amount, authorId, accountFromId, accountToId);
+    @PostMapping("/create")
+    public Boolean saveTransaction(@RequestBody TransactionDto transactionDto) {
+        return transactionService.saveTransaction(transactionDto);
     }
 }
