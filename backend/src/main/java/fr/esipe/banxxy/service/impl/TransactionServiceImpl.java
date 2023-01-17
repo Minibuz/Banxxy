@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Query;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -77,11 +78,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionDto getTransactionValidation(Integer amount, Integer authorId, Integer account_fromId, Integer account_toId) {
+        var date = new Date(System.currentTimeMillis());
+        
         var user = userRepository.findById(authorId).orElseThrow();
         var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
         var accountTo  = accountRepository.findById(account_toId).orElseThrow();
 
-        var date = new Date();
         if (accountFrom.getBalance() - amount < 0L){
             return null;
         }
