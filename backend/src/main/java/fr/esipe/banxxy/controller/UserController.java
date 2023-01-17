@@ -32,7 +32,7 @@ public class UserController {
     @PostMapping("/customer/create")
     public ResponseEntity<UserEntity> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
         var created = userService.createUser(userReceivedDto);
-        return created.map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.UNAUTHORIZED)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+        return created.map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
     @GetMapping("/{userId")
