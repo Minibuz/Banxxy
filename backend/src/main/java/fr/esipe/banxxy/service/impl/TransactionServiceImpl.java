@@ -40,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDto> getTransactionList(Integer accountId, Integer offset, Integer userId) {
+    public List<TransactionDto> getTransactionList(Integer accountId, Integer userId) {
         var user = userRepository.findById(userId).orElseThrow();
         var account = accountRepository.findById(accountId).orElseThrow();
         var transactions = user.getTransactions().stream().filter(transaction -> transaction.getAccountFrom().equals(account) || transaction.getAccountTo().equals(account)).toList();
