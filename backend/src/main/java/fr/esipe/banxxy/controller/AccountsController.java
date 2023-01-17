@@ -3,6 +3,8 @@ package fr.esipe.banxxy.controller;
 import fr.esipe.banxxy.dto.AccountDto;
 import fr.esipe.banxxy.service.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,17 +24,20 @@ public class AccountsController {
     }
 
     @GetMapping("/{userId}")
-    public List<AccountDto> getAccounts(@PathVariable Integer userId) {
-        return accountsService.getAccounts(userId);
+    public ResponseEntity<List<AccountDto>> getAccounts(@PathVariable Integer userId) {
+        var accounts = accountsService.getAccounts(userId);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @GetMapping("/attached/{userId}")
-    public List<AccountDto> getAttachedAccounts(@PathVariable Integer userId) {
-        return accountsService.getAttachedAccounts(userId);
+    public ResponseEntity<List<AccountDto>> getAttachedAccounts(@PathVariable Integer userId) {
+        var accounts = accountsService.getAttachedAccounts(userId);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @GetMapping("/all/{userId}")
-    public List<AccountDto> getAllAccounts(@PathVariable Integer userId) {
-        return accountsService.getAllAccounts(userId);
+    public ResponseEntity<List<AccountDto>> getAllAccounts(@PathVariable Integer userId) {
+        var accounts = accountsService.getAllAccounts(userId);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 }

@@ -23,6 +23,7 @@ public class TransactionController {
     }
 
     @GetMapping("/{userId}")
+
     public Integer getNbTransaction(@PathVariable Long userId){
         return transactionService.getNbTransactions(userId);
     }

@@ -1,6 +1,7 @@
 package fr.esipe.banxxy.service.impl;
 
 import fr.esipe.banxxy.dao.AdvisorEntity;
+
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.TransactionEntity;
 import fr.esipe.banxxy.dao.UserEntity;
@@ -10,7 +11,9 @@ import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.math.BigInteger;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +58,7 @@ public class TransactionServiceImpl implements TransactionService {
            transactionDto.setAccount_to(transaction.getAccountTo().getId());
            transactionDto.setDate(transaction.getDate().toString());
            transactionDtoList.add(transactionDto);
+
        });
        return transactionDtoList;
     }
@@ -115,6 +119,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         accountFrom.setBalance(accountFrom.getBalance().subtract(BigInteger.valueOf(amount)));
         accountTo.setBalance(accountTo.getBalance().add(BigInteger.valueOf(amount)));
+
 
         //save entity in Data Base
         accountRepository.save(accountFrom);
