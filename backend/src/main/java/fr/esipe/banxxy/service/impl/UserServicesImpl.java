@@ -24,38 +24,46 @@ public class UserServicesImpl implements UserService {
         this.customerRepository = customerRepository;
     }
 
-    private AdvisorEntity isAdvisor(Long userId) {
+    private AdvisorEntity getAdvisor(Long userId) {
         return advisorRepository.findById(userId).orElse(null);
     }
 
-    private CustomerEntity isCustomer(Long userId) {
+    private CustomerEntity getCustomer(Long userId) {
         return customerRepository.findById(userId).orElse(null);
     }
 
+    private List<UserDto> getCustomerList(AdvisorEntity advisor) {
+        List<UserDto> customerDtoList = new ArrayList<>();
+        var customers = advisor.getCustomers();
+        customers.forEach(customerEntity -> {
+            customerDtoList.add(new UserDto(
+                    customerEntity.getFirstname(),
+                    customerEntity.getName(),
+                    customerEntity.getId()));
+        });
+        return customerDtoList;
+    }
+
+    private List<UserDto> getChildrenList(CustomerEntity customer) {
+        List<UserDto> childrenDtoList = new ArrayList<>();
+        var children = customer.getChildrens();
+        children.forEach(customerEntity -> {
+            childrenDtoList.add(new UserDto(
+                    customerEntity.getFirstname(),
+                    customerEntity.getName(),
+                    customerEntity.getId()));
+        });
+        return childrenDtoList;
+    }
     @Override
     public List<UserDto> getDependantUser(Long userId) {
-        var advisor = isAdvisor(userId);
-        var customer = isCustomer(userId);
-        List<UserDto> userDtoList = new ArrayList<>();
+        var advisor = getAdvisor(userId);
+        var customer = getCustomer(userId);
 
         if (advisor != null) {
-            var customers = advisor.getCustomers();
-            customers.forEach(customerEntity -> {
-                    userDtoList.add(new UserDto(
-                            customerEntity.getFirstname(),
-                            customerEntity.getName(),
-                            customerEntity.getId()));
-            });
-            return userDtoList;
+            return getCustomerList(advisor);
         } else if (customer != null) {
-            var children = customer.getChildrens();
-            children.forEach(customerEntity -> {
-                userDtoList.add(new UserDto(
-                        customerEntity.getFirstname(),
-                        customerEntity.getName(),
-                        customerEntity.getId()));
-            });
-            return userDtoList;
+            return getChildrenList(customer);
         }
         throw new IllegalArgumentException();
     }
