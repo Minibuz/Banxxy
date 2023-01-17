@@ -1,10 +1,13 @@
 package fr.esipe.banxxy.controller;
 
+import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.UserDetailDto;
 import fr.esipe.banxxy.dto.UserDto;
 import fr.esipe.banxxy.dto.UserReceivedDto;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +30,9 @@ public class UserController {
 
 
     @PostMapping("/customer/create")
-    public void createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
-        userService.createUser(userReceivedDto);
+    public ResponseEntity<UserEntity> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
+        var created = userService.createUser(userReceivedDto);
+        return created.map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.UNAUTHORIZED)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
 
     @GetMapping("/{userId")

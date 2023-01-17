@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServicesImpl implements UserService {
@@ -100,7 +101,7 @@ public class UserServicesImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserReceivedDto userReceivedDto) {
+    public Optional<UserEntity> createUser(UserReceivedDto userReceivedDto) {
         UserEntity user = new UserEntity();
         user.setFirstname(userReceivedDto.getFirstName());
         user.setName(userReceivedDto.getLastName());
@@ -108,10 +109,11 @@ public class UserServicesImpl implements UserService {
         user.setPassword(userReceivedDto.getPassword());
         user.setMail(userReceivedDto.getMail());
         user.setType("customer");
-        userRepository.save(user);
+        var userCreated = userRepository.save(user);
         CustomerEntity customer = new CustomerEntity();
         customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
-        customerRepository.save(customer);
+        return userRepository.findById(userCreated.getId());
+
     }
 
 }
