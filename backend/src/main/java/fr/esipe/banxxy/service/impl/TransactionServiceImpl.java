@@ -23,17 +23,16 @@ import java.util.NoSuchElementException;
 public class TransactionServiceImpl implements TransactionService {
     private final UserRepository userRepository;
     private final AdvisorRepository advisorRepository;
-    private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
     private  final TransactionRepository transactionRepository;
 
     @Autowired
     public TransactionServiceImpl(UserRepository userRepository,
                                   AdvisorRepository advisorRepository,
-                                  CustomerRepository customerRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+                                  AccountRepository accountRepository,
+                                  TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.advisorRepository = advisorRepository;
-        this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
     }
@@ -70,8 +69,8 @@ public class TransactionServiceImpl implements TransactionService {
             return 0;
         if (!isCustomer(user))
             return  0;
-        var advisor = advisorRepository.findById(userId);
-        var customers = advisor.get().getCustomers();
+        var advisor = advisorRepository.findById(userId).orElseThrow();
+        var customers = advisor.getCustomers();
         if (customers.isEmpty())
             throw new NoSuchElementException("No customer found for this user");
         Long nbTransaction = 0L;
@@ -107,7 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
                  accountTo.getCustomer().getAdvisor().getId() != user.getId()))
             return false;
 
-        if (accountFrom.getBalance().subtract(BigInteger.valueOf(amount)).compareTo(BigInteger.ZERO) == -1){
+        if (accountFrom.getBalance().subtract(BigInteger.valueOf(amount)).compareTo(BigInteger.ZERO) < 0){
             return false;
         }
         var transactionEntity = new TransactionEntity();
