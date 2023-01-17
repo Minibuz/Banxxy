@@ -9,6 +9,7 @@ import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +19,16 @@ import java.util.NoSuchElementException;
 public class TransactionServiceImpl implements TransactionService {
     private final UserRepository userRepository;
     private final AdvisorRepository advisorRepository;
-    private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
     private  final TransactionRepository transactionRepository;
 
     @Autowired
     public TransactionServiceImpl(UserRepository userRepository,
                                   AdvisorRepository advisorRepository,
-                                  CustomerRepository customerRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+                                  AccountRepository accountRepository,
+                                  TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.advisorRepository = advisorRepository;
-        this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
     }
@@ -38,38 +38,44 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionDto> getTransactionList(Integer accountId, Integer userId) {
-        var user = userRepository.findById(userId).orElseThrow();
-        var account = accountRepository.findById(accountId).orElseThrow();
+        var user = userRepository.findById(userId.longValue()).orElseThrow();
+        var account = accountRepository.findById(accountId.longValue()).orElseThrow();
         var transactions = user.getTransactions().stream().filter(transaction -> transaction.getAccountFrom().equals(account) || transaction.getAccountTo().equals(account)).toList();
 
-       var transactionDtoList = new ArrayList<TransactionDto>();
-       transactions.forEach(transaction ->{
-           transactionDtoList.add(new TransactionDto(transaction.getAmount(),
-                   transaction.getAuthor().getUsername(),
-                   transaction.getAccountFrom().getId(),
-                   transaction.getAccountTo().getId(),
-                   transaction.getDate().toString()));
-       });
-       return transactionDtoList;
+        var transactionDtoList = new ArrayList<TransactionDto>();
+        transactions.forEach(transaction ->
+                transactionDtoList.add(
+                        new TransactionDto(
+                                transaction.getAmount(),
+                                transaction.getAuthor().getUsername(),
+                                transaction.getAccountFrom().getId().intValue(),
+                                transaction.getAccountTo().getId().intValue(),
+                                transaction.getDate().toString()
+                        ))
+       );
+        return transactionDtoList;
     }
 
     @Override
     public Integer getNbTransactions(Integer userId) {
-        var user = userRepository.findById(userId).orElseThrow();
+        var user = userRepository.findById(userId.longValue()).orElseThrow();
         if (!isAdvisor(user))
             return 0;
-        var advisor = advisorRepository.findById(userId);
+        var advisor = advisorRepository.findById(userId.longValue());
+        if (advisor.isEmpty()) {
+            throw new NoSuchElementException("No customer for this id");
+        }
         var customers = advisor.get().getCustomers();
-        if (customers.isEmpty())
+        if (customers.isEmpty()) {
             throw new NoSuchElementException("No customer found for this user");
-        Long nbTransaction = 0L;
+        }
+        var nbTransaction = 0L;
         for (var customer : customers) {
             nbTransaction += customer.getAccounts().stream()
-                    .map(accountEntity -> accountEntity.getTransactionsFrom().stream()
-                            .count())
+                    .map(accountEntity -> (long) accountEntity.getTransactionsFrom().size())
                     .reduce(0L, Long::sum);
         }
-        return nbTransaction.intValue();
+        return (int) nbTransaction;
     }
 
     @Override
@@ -80,11 +86,11 @@ public class TransactionServiceImpl implements TransactionService {
         var account_toId = transactionDto.getAccount_to();
         var authorId = transactionDto.getAuthorId();
 
-        var user = userRepository.findById(authorId).orElseThrow();
-        var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
-        var accountTo  = accountRepository.findById(account_toId).orElseThrow();
+        var user = userRepository.findById(authorId.longValue()).orElseThrow();
+        var accountFrom = accountRepository.findById(account_fromId.longValue()).orElseThrow();
+        var accountTo  = accountRepository.findById(account_toId.longValue()).orElseThrow();
 
-        if (accountFrom.getBalance() - amount < 0L){
+        if (accountFrom.getBalance().min(BigInteger.valueOf(amount)).compareTo(BigInteger.ZERO) < 0){
             return false;
         }
         var transactionEntity = new TransactionEntity();
@@ -94,8 +100,8 @@ public class TransactionServiceImpl implements TransactionService {
         transactionEntity.setDate(date);
         transactionEntity.setAuthor(user);
 
-        accountFrom.setBalance(accountFrom.getBalance() - amount);
-        accountTo.setBalance(accountTo.getBalance() + amount);
+        accountFrom.setBalance(accountFrom.getBalance().min(BigInteger.valueOf(amount)));
+        accountTo.setBalance(accountTo.getBalance().add(BigInteger.valueOf(amount)));
 
         //save entity in Data Base
         accountRepository.save(accountFrom);

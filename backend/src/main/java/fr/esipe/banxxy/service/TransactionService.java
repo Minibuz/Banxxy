@@ -9,6 +9,5 @@ public interface TransactionService {
 
     Integer getNbTransactions(Integer userId);
 
-
     Boolean saveTransaction(TransactionDto transactionDto);
 }
