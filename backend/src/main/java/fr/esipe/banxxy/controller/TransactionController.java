@@ -18,11 +18,11 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/{accountId}/{userId}")
+    @GetMapping("/{accountId}/{us<erId}")
     public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
                                                               @PathVariable Long userId) {
-        var trasactions = transactionService.getTransactionList(accountId, userId);
-        return new ResponseEntity<>(trasactions, HttpStatus.OK);
+        var transactions = transactionService.getTransactionList(accountId, userId);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
