@@ -3,6 +3,8 @@ package fr.esipe.banxxy.controller;
 import fr.esipe.banxxy.dto.TransactionDto;
 import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,19 +19,22 @@ public class TransactionController {
     }
 
     @GetMapping("/{accountId}/{userId}")
-    public List<TransactionDto> getTransaction(@PathVariable Long accountId,
-                                               @PathVariable Long userId) {
-        return transactionService.getTransactionList(accountId, userId);
+    public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
+                                                              @PathVariable Long userId) {
+        var trasactions = transactionService.getTransactionList(accountId, userId);
+        return new ResponseEntity<>(trasactions, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
 
-    public Integer getNbTransaction(@PathVariable Long userId){
-        return transactionService.getNbTransactions(userId);
+    public ResponseEntity<Integer> getNbTransaction(@PathVariable Long userId){
+        var nbTransactions = transactionService.getNbTransactions(userId);
+        return new ResponseEntity<>(nbTransactions,HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public Boolean saveTransaction(@RequestBody TransactionDto transactionDto) {
-        return transactionService.saveTransaction(transactionDto);
+    public ResponseEntity<Boolean> saveTransaction(@RequestBody TransactionDto transactionDto) {
+        var isSaveTransaction = transactionService.saveTransaction(transactionDto);
+        return new ResponseEntity<>(isSaveTransaction, HttpStatus.OK);
     }
 }
