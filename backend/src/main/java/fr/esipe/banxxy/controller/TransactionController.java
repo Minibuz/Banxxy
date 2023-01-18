@@ -17,13 +17,14 @@ public class TransactionController {
     }
 
     @GetMapping("/{accountId}/{userId}")
-    public List<TransactionDto> getTransaction(@PathVariable Integer accountId,
-                                               @PathVariable Integer userId) {
+    public List<TransactionDto> getTransaction(@PathVariable Long accountId,
+                                               @PathVariable Long userId) {
         return transactionService.getTransactionList(accountId, userId);
     }
 
     @GetMapping("/{userId}")
-    public Integer getNbTransaction(@PathVariable Integer userId){
+
+    public Integer getNbTransaction(@PathVariable Long userId){
         return transactionService.getNbTransactions(userId);
     }
 
