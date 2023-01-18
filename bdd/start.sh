@@ -82,6 +82,14 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   ALTER TABLE public.transaction OWNER TO postgres;
 
+
+  --
+  -- Name: roles; Type: ENUM; Schema: public; Owner: postgres
+  --
+
+  CREATE TYPE public.role AS ENUM ('ROLE_CUSTOMER', 'ROLE_ADVISOR');
+
+
   --
   -- Name: user; Type: TABLE; Schema: public; Owner: postgres
   --
@@ -94,6 +102,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
       firstname character varying(20) NOT NULL,
       mail character varying(40) NOT NULL,
       password character varying(255) NOT NULL,
+      role public.role NOT NULL,
       type character varying(10) NOT NULL
   );
 
@@ -203,20 +212,21 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   ALTER TABLE ONLY public.customer
       ADD CONSTRAINT fk_user FOREIGN KEY (id) REFERENCES public."user"(id);
 
+
   --
   -- Adding data
   --
 
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
-      VALUES ('0001', 'minibuz', 'buzelin', 'leo', 'mail', '0000', 'advisor');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
-      VALUES ('0002', 'maks', 'dumerat', 'maxime', 'mail', '0000', 'advisor');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
-      VALUES ('0003', 'lbar', 'barroux', 'leo', 'mail', '0000', 'customer');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
-      VALUES ('0004', 'casi', 'domart', 'guillaume', 'mail', '0000', 'customer');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, type)
-      VALUES ('0005', 'dreccus', 'ricard', 'martin', 'mail', '0000', 'customer');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role, type)
+      VALUES ('0001', 'minibuz', 'buzelin', 'leo', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_ADVISOR', 'advisor');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
+      VALUES ('0002', 'maks', 'dumerat', 'maxime', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_ADVISOR', 'advisor');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
+      VALUES ('0003', 'lbar', 'barroux', 'leo', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
+      VALUES ('0004', 'casi', 'domart', 'guillaume', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
+  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
+      VALUES ('0005', 'dreccus', 'ricard', 'martin', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
   INSERT INTO public.advisor(id)
       VALUES (0);
   INSERT INTO public.advisor(id)

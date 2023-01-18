@@ -1,15 +1,15 @@
 package fr.esipe.banxxy.controller;
 
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class Controller {
+@org.springframework.stereotype.Controller
+public class Controller implements ErrorController {
+    private static final String PATH = "/error";
 
-    @RequestMapping(value = "{_:^(?!api).$}", method = {RequestMethod.GET, RequestMethod.POST})
-    public String redirectApi() {
-        System.out.println("Test");
+    @RequestMapping(value = PATH, method = {RequestMethod.GET, RequestMethod.POST})
+    public String error() {
         return "forward:/";
     }
 }
