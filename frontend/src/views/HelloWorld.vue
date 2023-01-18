@@ -51,6 +51,14 @@
     404
   </v-btn>
 
+  <v-btn
+    class="ma-2"
+    color="primary"
+    @click="goTo('/userCreation')"
+  >
+    Create a user
+  </v-btn>
+
 </template>
 
 <script>
