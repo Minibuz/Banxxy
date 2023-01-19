@@ -1,5 +1,6 @@
 package fr.esipe.banxxy.controller;
 
+import fr.esipe.banxxy.dto.AccountDetailledDto;
 import fr.esipe.banxxy.dto.AccountsParentDto;
 import fr.esipe.banxxy.service.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,13 @@ public class AccountsController {
     public ResponseEntity<List<AccountsParentDto>> getAllAccounts(@PathVariable Integer userId) {
         var accounts = accountsService.getAllAccounts(userId);
         return new ResponseEntity<>(accounts, HttpStatus.OK);
+    }
+
+    @GetMapping("/detailed/{userId}")
+    public ResponseEntity<List<AccountDetailledDto>> getDetailedAccounts(@PathVariable Integer userId) {
+        var accounts = accountsService.getDetailedAccounts(userId);
+        return accounts.isEmpty() ?
+                new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :
+                new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 }
