@@ -21,7 +21,7 @@ class CreateCustomer{
                 }
             })
             .catch(error => {
-                console.error("There is an error",error);
+                console.log("There is an error",error);
             });
     }
 }
