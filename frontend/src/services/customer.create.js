@@ -18,10 +18,12 @@ class CreateCustomer{
             .then(response => {
                 if (response.ok){
                     console.log("successful",response)
+                }else {
+                    console.log("Not successful",response)
                 }
             })
             .catch(error => {
-                console.log("There is an error",error);
+                // console.log("There is an error",error);
             });
     }
 }
