@@ -2,16 +2,22 @@
   <v-app :theme="myCustomLightTheme">
 
     <v-app-bar>
+
+
+      <v-app-bar-title class="font-weight-bold">Banxxy</v-app-bar-title>
+
       <v-spacer></v-spacer>
 
-      <v-btn
-          :prepend-icon="theme.global.name.value === 'myCustomLightTheme' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-          @click="toggleTheme"
-      >Toggle Theme</v-btn>
+        <v-col cols = auto>
+          <v-row dense class="font-weight-bold text-lg-subtitle-1 text-sm-subtitle-3"> {{user.username}} </v-row>
+          <v-row dense class="text-grey-darken-1 text-caption">{{showUserRole(user.role)}}</v-row>
+        </v-col>
+        <v-btn
+            :prepend-icon="theme.global.name.value === 'myCustomLightTheme' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+            @click="toggleTheme"
+        ></v-btn>
 
-      <v-btn icon="mdi-logout" @click="logOut">
-
-      </v-btn>
+        <v-btn icon="mdi-logout" @click="logOut"></v-btn>
 
     </v-app-bar>
 
@@ -32,13 +38,33 @@ export default {
       toggleTheme: () => theme.global.name.value = theme.global.current.value.dark ? 'myCustomLightTheme' : 'dark'
     }
   },
+  data () {
+    return {
+      user: {username: null, role: null},
+    }
+  },
   methods : {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
+    },
+    showUserRole(role){
+      switch (role) {
+        case "ROLE_ADVISOR" :
+          return "Conseiller"
+        default :
+          return "Client"
+      }
     }
+  },
+  beforeMount() {
+    this.$data.user.username = this.$store.state.auth.user.username;
+    this.$data.user.role = this.$store.state.auth.user.roles[0];
   }
 }
+
+
+
 </script>
 
 <style scoped>

@@ -33,7 +33,7 @@
   <v-btn
       class="ma-2"
       color="primary"
-      @click="goTo('/home')">
+      @click="goTo('/')">
     Home
   </v-btn>
 

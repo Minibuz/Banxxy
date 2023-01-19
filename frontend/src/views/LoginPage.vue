@@ -52,7 +52,7 @@ export default {
     async handleLogin(){
         this.$store.dispatch("auth/login", this.form).then(data => {
               console.log(data)
-               this.$router.push("/home");
+               this.$router.push({name:'home'});
             },
             (error) => {
               this.loading = false;
@@ -69,7 +69,7 @@ export default {
       const user = this.$data.form
       this.$store.dispatch("auth/login", user).then(
           () => {
-            this.$router.push("/home");
+            this.$router.push("home");
           },
           (error) => {
             this.loading = false;

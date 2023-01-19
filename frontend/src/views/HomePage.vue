@@ -61,7 +61,7 @@
                 :rows-per-page="5"
                 @click-row="selectUser">
 
-              <template #item-actions="item">
+              <template #item-actions="item" v-if="can('advisor')">
                 <div class="operation-wrapper">
                   <!--deleteItem(item)-->
                   <v-icon icon="mdi-delete"  @click="openModalDeleteUser(item)"></v-icon>
@@ -82,7 +82,7 @@
                 @click-row="selectCompte"
             >
 
-              <template #item-actions="item">
+              <template #item-actions="item" v-if="can('advisor')">
                 <div class="operation-wrapper">
                   <v-icon icon="mdi-delete"  @click="openModalDeleteCompte(item)"></v-icon>
                 </div>
@@ -234,7 +234,7 @@ import { useTheme } from 'vuetify'
 // import searchBar from '@/components/SearchBar'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
 import authHeader from "@/services/auth-header";
-
+import {can} from "@/utils"
 
 
 export default {
@@ -245,6 +245,7 @@ export default {
       { text: "Identifiant", value: "userId" },
       { text: "NOM", value: "lastName"},
       { text: "PRENOM", value: "firstName"},
+
       { text: "ACTIONS", value: "actions"},
     ];
     const headersCompte = [
@@ -306,6 +307,7 @@ export default {
     }
   },
   methods: {
+    can,
     //USER
     //permet de choisir un utilisateur
     selectUser(item){
