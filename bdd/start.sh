@@ -35,6 +35,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   CREATE TABLE public.account (
       id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 0 MINVALUE 0 MAXVALUE 999999 CACHE 1 ),
+      title character varying(255),
       customer_id bigint NOT NULL,
       balance bigint NOT NULL
   );
@@ -96,7 +97,6 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   CREATE TABLE public."user" (
       id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 0 MINVALUE 0 MAXVALUE 999999 CACHE 1 ),
-      personal_id character(4) NOT NULL,
       username character varying(20) NOT NULL,
       name character varying(20) NOT NULL,
       firstname character varying(20) NOT NULL,
@@ -217,16 +217,16 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
   -- Adding data
   --
 
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role, type)
-      VALUES ('0001', 'minibuz', 'buzelin', 'leo', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_ADVISOR', 'advisor');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
-      VALUES ('0002', 'maks', 'dumerat', 'maxime', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_ADVISOR', 'advisor');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
-      VALUES ('0003', 'lbar', 'barroux', 'leo', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
-      VALUES ('0004', 'casi', 'domart', 'guillaume', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
-  INSERT INTO public."user"(personal_id, username, name, firstname, mail, password, role,type)
-      VALUES ('0005', 'dreccus', 'ricard', 'martin', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
+  INSERT INTO public."user"(username, name, firstname, mail, password, role, type)
+      VALUES ('minibuz', 'buzelin', 'leo', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_ADVISOR', 'advisor');
+  INSERT INTO public."user"(username, name, firstname, mail, password, role,type)
+      VALUES ('maks', 'dumerat', 'maxime', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_ADVISOR', 'advisor');
+  INSERT INTO public."user"(username, name, firstname, mail, password, role,type)
+      VALUES ('lbar', 'barroux', 'leo', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
+  INSERT INTO public."user"(username, name, firstname, mail, password, role,type)
+      VALUES ('casi', 'domart', 'guillaume', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
+  INSERT INTO public."user"(username, name, firstname, mail, password, role,type)
+      VALUES ('dreccus', 'ricard', 'martin', 'mail', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
   INSERT INTO public.advisor(id)
       VALUES (0);
   INSERT INTO public.advisor(id)
@@ -237,10 +237,10 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
       VALUES (3, 0, 2);
   INSERT INTO public.customer(id, advisor, parent)
       VALUES (4, 1, null);
-  INSERT INTO public.account(customer_id, balance)
-      VALUES (2, 1000);
-  INSERT INTO public.account(customer_id, balance)
-      VALUES (3, 100);
-  INSERT INTO public.account(customer_id, balance)
-      VALUES (4, 500);
+  INSERT INTO public.account(title, customer_id, balance)
+      VALUES ('My personnal account', 2, 1000);
+  INSERT INTO public.account(title, customer_id, balance)
+      VALUES ('El accounto de Patrick', 3, 100);
+  INSERT INTO public.account(title, customer_id, balance)
+      VALUES ('Le Account' ,4, 500);
 EOSQL
