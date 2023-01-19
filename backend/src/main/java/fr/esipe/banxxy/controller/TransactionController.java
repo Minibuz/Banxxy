@@ -18,7 +18,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/{accountId}/{us<erId}")
+    @GetMapping("/{accountId}/{userId}")
     public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
                                                               @PathVariable Long userId) {
         var transactions = transactionService.getTransactionList(accountId, userId);
