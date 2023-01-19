@@ -32,14 +32,29 @@ public class UserServicesImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Return the advisor associated with the userId
+     * @param userId the id used to find the advisor
+     * @return the advisor if exists, otherwise null
+     */
     private AdvisorEntity getAdvisor(Long userId) {
         return advisorRepository.findById(userId).orElse(null);
     }
 
+    /**
+     * Get the customer associated with the userId
+     * @param userId the id used to find the customer
+     * @return the customer if exists, otherwise null
+     */
     private CustomerEntity getCustomer(Long userId) {
         return customerRepository.findById(userId).orElse(null);
     }
 
+    /**
+     * Get the list of customers associated with the advisor given
+     * @param advisor the advisor who manages the customers
+     * @return the list of customers associated with the advisor
+     */
     private List<UserDto> getCustomerList(AdvisorEntity advisor) {
         List<UserDto> customerDtoList = new ArrayList<>();
         var customers = advisor.getCustomers();
@@ -50,6 +65,11 @@ public class UserServicesImpl implements UserService {
         return customerDtoList;
     }
 
+    /**
+     * Get the list of children associated with the customer given
+     * @param customer the customer responsible for the children
+     * @return the list of children associated with the customer
+     */
     private List<UserDto> getChildrenList(CustomerEntity customer) {
         List<UserDto> childrenDtoList = new ArrayList<>();
         var children = customer.getChildrens();
@@ -59,6 +79,12 @@ public class UserServicesImpl implements UserService {
                 customerEntity.getId())));
         return childrenDtoList;
     }
+
+    /**
+     * Get the list of users depending on the user received
+     * @param userId the id of the user received
+     * @return the list of children if the user is a customer, the list of customers if the user is an advisor, otherwise an empty Collection
+     */
     @Override
     public List<UserDto> getDependantUser(Long userId) {
         var advisor = getAdvisor(userId);
@@ -72,6 +98,11 @@ public class UserServicesImpl implements UserService {
         return Collections.emptyList();
     }
 
+    /**
+     * Create a userDetailDto using user given
+     * @param user the user having datas to use
+     * @return the object containing datas
+     */
     private UserDetailDto getUser(UserEntity user) {
         return new UserDetailDto(
                 user.getFirstname(),
@@ -83,6 +114,11 @@ public class UserServicesImpl implements UserService {
         );
     }
 
+    /**
+     * Get an objet containing details of the user associated with the userId given
+     * @param userId the id of the user
+     * @return objet containing details of the user
+     */
     @Override
     public UserDetailDto getUser(Long userId) {
         var advisor = getAdvisor(userId);
@@ -97,6 +133,11 @@ public class UserServicesImpl implements UserService {
 
     }
 
+    /**
+     * Create a customer based on datas received
+     * @param userReceivedDto datas about de customer to create
+     * @return an Optional containing the user if the creation succeed, otherwise empty
+     */
     @Override
     public Optional<UserEntity> createUser(UserReceivedDto userReceivedDto) {
         UserEntity user = new UserEntity();
