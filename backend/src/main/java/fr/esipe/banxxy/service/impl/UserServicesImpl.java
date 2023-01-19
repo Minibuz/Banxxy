@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,24 +43,20 @@ public class UserServicesImpl implements UserService {
     private List<UserDto> getCustomerList(AdvisorEntity advisor) {
         List<UserDto> customerDtoList = new ArrayList<>();
         var customers = advisor.getCustomers();
-        customers.forEach(customerEntity -> {
-            customerDtoList.add(new UserDto(
-                    customerEntity.getFirstname(),
-                    customerEntity.getName(),
-                    customerEntity.getId()));
-        });
+        customers.forEach(customerEntity -> customerDtoList.add(new UserDto(
+                customerEntity.getFirstname(),
+                customerEntity.getName(),
+                customerEntity.getId())));
         return customerDtoList;
     }
 
     private List<UserDto> getChildrenList(CustomerEntity customer) {
         List<UserDto> childrenDtoList = new ArrayList<>();
         var children = customer.getChildrens();
-        children.forEach(customerEntity -> {
-            childrenDtoList.add(new UserDto(
-                    customerEntity.getFirstname(),
-                    customerEntity.getName(),
-                    customerEntity.getId()));
-        });
+        children.forEach(customerEntity -> childrenDtoList.add(new UserDto(
+                customerEntity.getFirstname(),
+                customerEntity.getName(),
+                customerEntity.getId())));
         return childrenDtoList;
     }
     @Override
@@ -72,7 +69,7 @@ public class UserServicesImpl implements UserService {
         } else if (customer != null) {
             return getChildrenList(customer);
         }
-        throw new IllegalArgumentException();
+        return Collections.emptyList();
     }
 
     private UserDetailDto getUser(UserEntity user) {
@@ -96,7 +93,7 @@ public class UserServicesImpl implements UserService {
         if (customer != null){
             return getUser(customer);
         }
-        throw new IllegalArgumentException();
+        return null;
 
     }
 
@@ -112,6 +109,7 @@ public class UserServicesImpl implements UserService {
         var userCreated = userRepository.save(user);
         CustomerEntity customer = new CustomerEntity();
         customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
+        customerRepository.save(customer);
         return userRepository.findById(userCreated.getId());
 
     }
