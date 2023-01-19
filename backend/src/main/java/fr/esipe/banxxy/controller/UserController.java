@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -26,8 +27,8 @@ public class UserController {
     @GetMapping("/all/{userId}")
     public ResponseEntity<List<UserDto>> getDependantUser(@PathVariable Long userId) {
         var users = userService.getDependantUser(userId);
-        if(users == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        if(users.equals(Collections.emptyList()))
+            return new ResponseEntity<>(users, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
