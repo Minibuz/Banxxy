@@ -49,9 +49,9 @@ export default {
   methods: {
 
     //this is a API Call example
-    async handleLogin(){
+    handleLogin(){
         this.$store.dispatch("auth/login", this.form).then(data => {
-              console.log(data)
+              //console.log(data)
                this.$router.push({name:'home'});
             },
             (error) => {

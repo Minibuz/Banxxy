@@ -23,15 +23,15 @@ export const can = (role) => {
         return false;
     }
     const user = JSON.parse(localStorage.getItem('user'));
-    const r = user.roles[0]
+    const role_user = user.roles[0]
     //const r = this.$store.state.auth.user.roles[0]
-    if(r === null){
+    if(role_user === null){
         return false;
     }
-    switch (r) {
+    switch (role_user) {
         case "ROLE_ADVISOR" :
-            return "advisor" === role
+            return role === "advisor"
         default :
-            return "customer" === role
+            return role === "customer"
     }
 }
