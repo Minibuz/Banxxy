@@ -22,9 +22,15 @@ class CreateCustomer{
                     console.log("Not successful",response)
                 }
             })
-            .catch(error => {
-                // console.log("There is an error",error);
-            });
+            //TODO
+
+            // .catch(error => {
+            //
+            //     // console.log("There is an error",error);
+            //     console.log("There is an error",error);
+            // });
+
+
     }
 }
 
