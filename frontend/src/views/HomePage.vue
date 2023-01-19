@@ -312,7 +312,7 @@ export default {
     //permet de choisir un utilisateur
     selectUser(item){
       this.$data.selectedUser = item;
-      this.$data.itemsCompteTable = this.itemsCompte.filter((i) => i.id_client === item.id);
+      this.$data.itemsCompteTable = this.itemsCompte.filter((i) => i.id_owner === item.userId);
       console.table(item);
     },
 
@@ -460,8 +460,8 @@ export default {
   // }
   //config ready
   try {
-    //TODO need the api path for delete a user
-    const response = await fetch(`/api/accounts/all/${user_connect}`,{
+
+    const response = await fetch(`/api/accounts/detailed/${user_connect}`,{
       headers: authHeader()
     });
     const results = await response.json()
