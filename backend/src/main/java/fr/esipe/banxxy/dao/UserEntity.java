@@ -14,9 +14,6 @@ public class UserEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "personal_id", nullable = false)
-    private String personId;
-
     @Column(name = "username", nullable = false)
     private String username;
 
@@ -48,14 +45,6 @@ public class UserEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(String personId) {
-        this.personId = personId;
     }
 
     public String getUsername() {
