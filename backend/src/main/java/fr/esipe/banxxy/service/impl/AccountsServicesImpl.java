@@ -4,6 +4,9 @@ import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.AccountDto;
+import fr.esipe.banxxy.dto.AccountsChildrenDto;
+import fr.esipe.banxxy.dto.AccountsParentDto;
+import fr.esipe.banxxy.repository.AccountRepository;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
@@ -11,10 +14,7 @@ import fr.esipe.banxxy.service.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AccountsServicesImpl implements AccountsService {
@@ -22,14 +22,17 @@ public class AccountsServicesImpl implements AccountsService {
     private final UserRepository userRepository;
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public AccountsServicesImpl(UserRepository userRepository,
                                 AdvisorRepository advisorRepository,
-                                CustomerRepository customerRepository) {
+                                CustomerRepository customerRepository,
+                                AccountRepository accountRepository) {
         this.userRepository = userRepository;
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
+        this.accountRepository = accountRepository;
     }
 
     private boolean isAdvisor(UserEntity user) {
@@ -52,7 +55,7 @@ public class AccountsServicesImpl implements AccountsService {
     }
 
     @Override
-    public List<AccountDto> getAccounts(Integer userId) {
+    public List<AccountsParentDto> getAccounts(Integer userId) {
         var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
         // TODO - replace exception thrown by returning error to api
         if (isAdvisor(user))
@@ -62,7 +65,7 @@ public class AccountsServicesImpl implements AccountsService {
     }
 
     @Override
-    public List<AccountDto> getAttachedAccounts(Integer userId) {
+    public List<AccountsParentDto> getAttachedAccounts(Integer userId) {
         // TODO - replace exception thrown by returning error to api
         var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
         if (isCustomer(user))
@@ -71,24 +74,58 @@ public class AccountsServicesImpl implements AccountsService {
         return getAllAccounts(userId);
     }
 
+    private Set<AccountDto> getAccountsFromCustomer(CustomerEntity customer) {
+        var accounts = new HashSet<AccountDto>();
+        customer.getAccounts().forEach(account -> {
+            accounts.add(new AccountDto(
+                    "title",
+                    account.getId(),
+                    account.getBalance()
+            ));
+        });
+        return accounts;
+    }
+
+    private Set<AccountsChildrenDto> getChildrensAccountsFromCustomer(CustomerEntity customer) {
+        var childrens = new HashSet<AccountsChildrenDto>();
+        customer.getChildrens().forEach(children -> {
+            childrens.add(new AccountsChildrenDto(
+                    children.getFirstname(),
+                    children.getName(),
+                    children.getId(),
+                    getAccountsFromCustomer(children)
+            ));
+        });
+        return childrens;
+    }
+
     @Override
-    public List<AccountDto> getAllAccounts(Integer userId) {
+    public List<AccountsParentDto> getAllAccounts(Integer userId) {
         // TODO - replace exception thrown by returning error to api
         var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
-        var accountList = new ArrayList<AccountDto>();
         Set<CustomerEntity> customers = getCustomersFromUser(user, userId);
         if (customers.isEmpty())
             // TODO - replace exception thrown by returning error to api
             throw new NoSuchElementException("No customer found for this user");
 
-        customers.forEach(customer -> customer.getAccounts().forEach(account -> accountList.add(
-                new AccountDto(account.getCustomer().getFirstname(),
-                        account.getCustomer().getName(),
-                        account.getCustomer().getAdvisor().getFirstname(),
-                        account.getCustomer().getAdvisor().getName(),
-                        account.getBalance().longValue()
-                )
-        )));
+        var accountList = new ArrayList<AccountsParentDto>();
+
+        customers.forEach(customer -> {
+            var accounts = getAccountsFromCustomer(customer);
+            var childrens = getChildrensAccountsFromCustomer(customer);
+
+            accountList.add(
+                    new AccountsParentDto(customer.getFirstname(),
+                            customer.getName(),
+                            customer.getAdvisor().getFirstname(),
+                            customer.getAdvisor().getName(),
+                            customer.getId(),
+                            accounts,
+                            childrens
+                    )
+            );
+        });
+
         return accountList;
     }
 }

@@ -1,13 +1,13 @@
 package fr.esipe.banxxy.service;
 
-import fr.esipe.banxxy.dto.AccountDto;
+import fr.esipe.banxxy.dto.AccountsParentDto;
 
 import java.util.List;
 
 public interface AccountsService {
-    List<AccountDto> getAccounts(Integer userId);
+    List<AccountsParentDto> getAccounts(Integer userId);
 
-    List<AccountDto> getAttachedAccounts(Integer userId);
+    List<AccountsParentDto> getAttachedAccounts(Integer userId);
 
-    List<AccountDto> getAllAccounts(Integer userId);
+    List<AccountsParentDto> getAllAccounts(Integer userId);
 }

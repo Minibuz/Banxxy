@@ -1,28 +1,40 @@
 package fr.esipe.banxxy.dto;
 
+import java.math.BigInteger;
+
 public class AccountDto {
 
-    private String owner;
-    private String advisor;
-    private Long balance;
+    private String title;
+    private Long id;
+    private BigInteger balance;
 
-    public AccountDto(String ownerFirstName, String ownerLastName,
-                      String advisorFirstName, String advisorLastName,
-                      Long balance) {
-        this.owner = ownerFirstName + " " + ownerLastName;
-        this.advisor = advisorFirstName + " " + advisorLastName;
+    public AccountDto(String title, Long id, BigInteger balance) {
+        this.title = "title";
+        this.id = id;
         this.balance = balance;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getTitle() {
+        return title;
     }
 
-    public String getAdvisor() {
-        return advisor;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public Long getBalance() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public BigInteger getBalance() {
         return balance;
+    }
+
+    public void setBalance(BigInteger balance) {
+        this.balance = balance;
     }
 }
