@@ -1,13 +1,16 @@
-const API_URL = '/api/customer/create/';
+import authHeader from "@/services/auth-header";
+
+const API_URL = '/api/user/customer/create/';
 
 class CreateCustomer{
     static create(customer){
-        return fetch(`${API_URL}customer`,{
+        return fetch(`${API_URL}`,{
             method: 'POST',
+            headers: authHeader(),
             body:{
                 firstName: customer.firstName,
                 lastName: customer.lastName,
-                email: customer.email,
+                mail: customer.mail,
                 username: customer.username,
                 password: customer.password,
                 advisorId: customer.advisorId
@@ -18,7 +21,7 @@ class CreateCustomer{
                 }
             })
             .catch(error => {
-                console.error("This is an error",error);
+                console.error("There is an error",error);
             });
     }
 }
