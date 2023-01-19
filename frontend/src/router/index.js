@@ -27,10 +27,10 @@ const routes = [
         meta: {requiresAuth: false, layout: 'blank'}
     },
     {
-        path: '/userCreation',
-        name: 'userCreation',
+        path: '/customerCreation',
+        name: 'customerCreation',
         component: () => import('@/views/CustomerCreation'),
-        meta: {requiresAuth: false, layout: 'content'}
+        meta: {requiresAuth: true, layout: 'content'}
     },
 ]
 
