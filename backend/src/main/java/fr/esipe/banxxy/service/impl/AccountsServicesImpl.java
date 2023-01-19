@@ -3,10 +3,10 @@ package fr.esipe.banxxy.service.impl;
 import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.UserEntity;
+import fr.esipe.banxxy.dto.AccountDetailledDto;
 import fr.esipe.banxxy.dto.AccountDto;
 import fr.esipe.banxxy.dto.AccountsChildrenDto;
 import fr.esipe.banxxy.dto.AccountsParentDto;
-import fr.esipe.banxxy.repository.AccountRepository;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
@@ -22,17 +22,14 @@ public class AccountsServicesImpl implements AccountsService {
     private final UserRepository userRepository;
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
-    private final AccountRepository accountRepository;
 
     @Autowired
     public AccountsServicesImpl(UserRepository userRepository,
                                 AdvisorRepository advisorRepository,
-                                CustomerRepository customerRepository,
-                                AccountRepository accountRepository) {
+                                CustomerRepository customerRepository) {
         this.userRepository = userRepository;
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
-        this.accountRepository = accountRepository;
     }
 
     private boolean isAdvisor(UserEntity user) {
@@ -76,26 +73,24 @@ public class AccountsServicesImpl implements AccountsService {
 
     private Set<AccountDto> getAccountsFromCustomer(CustomerEntity customer) {
         var accounts = new HashSet<AccountDto>();
-        customer.getAccounts().forEach(account -> {
-            accounts.add(new AccountDto(
-                    "title",
-                    account.getId(),
-                    account.getBalance()
-            ));
-        });
+        customer.getAccounts().forEach(account ->
+                accounts.add(new AccountDto(
+                        "title",
+                        account.getId(),
+                        account.getBalance()
+                )));
         return accounts;
     }
 
     private Set<AccountsChildrenDto> getChildrensAccountsFromCustomer(CustomerEntity customer) {
         var childrens = new HashSet<AccountsChildrenDto>();
-        customer.getChildrens().forEach(children -> {
-            childrens.add(new AccountsChildrenDto(
-                    children.getFirstname(),
-                    children.getName(),
-                    children.getId(),
-                    getAccountsFromCustomer(children)
-            ));
-        });
+        customer.getChildrens().forEach(children ->
+                childrens.add(new AccountsChildrenDto(
+                        children.getFirstname(),
+                        children.getName(),
+                        children.getId(),
+                        getAccountsFromCustomer(children)
+                )));
         return childrens;
     }
 
@@ -125,7 +120,43 @@ public class AccountsServicesImpl implements AccountsService {
                     )
             );
         });
-
         return accountList;
+    }
+
+    @Override
+    public List<AccountDetailledDto> getDetailedAccounts(Integer userId) {
+        // TODO - replace exception thrown by returning error to api
+        var user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
+        Set<CustomerEntity> customers = getCustomersFromUser(user, userId);
+        if (customers.isEmpty())
+            return List.of();
+        var accountsList = new ArrayList<AccountDetailledDto>();
+        customers.forEach(customer -> {
+            customer.getAccounts().forEach(account ->
+                    accountsList.add(new AccountDetailledDto(
+                            account.getId(),
+                            "title",
+                            customer.getFirstname(),
+                            customer.getName(),
+                            customer.getAdvisor().getFirstname(),
+                            customer.getAdvisor().getName(),
+                            account.getBalance(),
+                            customer.getId()
+                    ))
+            );
+            customer.getChildrens().forEach(children -> children.getAccounts().forEach(account ->
+                    accountsList.add(new AccountDetailledDto(
+                            account.getId(),
+                            "title",
+                            children.getFirstname(),
+                            children.getName(),
+                            children.getAdvisor().getFirstname(),
+                            children.getAdvisor().getName(),
+                            account.getBalance(),
+                            children.getId()
+                    ))
+            ));
+        });
+        return accountsList;
     }
 }
