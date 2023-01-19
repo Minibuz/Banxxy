@@ -11,6 +11,15 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender mailSender;
 
+    /**
+     * Returns a SimpleMailMessage with a receiver, subject, and body passed as parameters.
+     * The sender of the email is "banxxy.esipe@gmail.com".
+     *
+     * @param toEmail The email address of the receiver of the to-be-sent email. (String)
+     * @param subject The subject of the to-be-sent email. (String)
+     * @param body The body of the to-be-sent email. (String)
+     * @return message A SimpleMailMessage with the sender, receiver, subject and body set.
+     */
     private SimpleMailMessage createEmail(String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         String sender = "banxxy.esipe@gmail.com";
@@ -21,6 +30,10 @@ public class EmailSenderService {
         return message;
     }
 
+    /**
+     * Sends an email with the instructions for the receiver to reset his password.
+     * @param toEmail The email address of the receiver. (String)
+     */
     public void onResetPassword(String toEmail) {
 
         mailSender.send(createEmail(
@@ -31,6 +44,10 @@ public class EmailSenderService {
                         "Si vous êtes à l'origine de cette demande, veuillez cliquer sur le lien suivant : -------------------------"));
     }
 
+    /**
+     * Sends a notification email usually sent after to a user after his account has been created.
+     * @param toEmail The email address of the receiver. (String)
+     */
     public void onCreateAccount(String toEmail) {
         mailSender.send(createEmail(toEmail,
                 "Validation de création de votre compte Banxxy",
