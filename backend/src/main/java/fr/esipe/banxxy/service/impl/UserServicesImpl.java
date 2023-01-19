@@ -72,7 +72,7 @@ public class UserServicesImpl implements UserService {
         } else if (customer != null) {
             return getChildrenList(customer);
         }
-        throw new IllegalArgumentException();
+        return null;
     }
 
     private UserDetailDto getUser(UserEntity user) {
@@ -96,7 +96,7 @@ public class UserServicesImpl implements UserService {
         if (customer != null){
             return getUser(customer);
         }
-        throw new IllegalArgumentException();
+        return null;
 
     }
 
@@ -112,6 +112,7 @@ public class UserServicesImpl implements UserService {
         var userCreated = userRepository.save(user);
         CustomerEntity customer = new CustomerEntity();
         customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
+        customerRepository.save(customer);
         return userRepository.findById(userCreated.getId());
 
     }

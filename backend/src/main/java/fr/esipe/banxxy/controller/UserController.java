@@ -24,19 +24,24 @@ public class UserController {
     }
 
     @GetMapping("/all/{userId}")
-    public List<UserDto> getDependantUser(@PathVariable Long userId) {
-        return userService.getDependantUser(userId);
+    public ResponseEntity<List<UserDto>> getDependantUser(@PathVariable Long userId) {
+        var users = userService.getDependantUser(userId);
+        if(users == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 
     @PostMapping("/customer/create")
     public ResponseEntity<UserEntity> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
-        var created = userService.createUser(userReceivedDto);
-        return created.map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+        return userService.createUser(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
     @GetMapping("/{userId}")
-    public UserDetailDto getUser(@PathVariable Long userId) {
-        return userService.getUser(userId);
+    public ResponseEntity<UserDetailDto> getUser(@PathVariable Long userId) {
+        var user = userService.getUser(userId);
+        if(user == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
