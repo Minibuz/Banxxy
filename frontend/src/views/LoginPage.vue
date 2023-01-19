@@ -50,7 +50,7 @@ export default {
 
     //this is a API Call example
     handleLogin(){
-        this.$store.dispatch("auth/login", this.form).then(data => {
+        this.$store.dispatch("auth/login", this.form).then(() => {
               //console.log(data)
                this.$router.push({name:'home'});
             },
