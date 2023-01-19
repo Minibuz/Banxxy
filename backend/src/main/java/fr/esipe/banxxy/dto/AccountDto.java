@@ -9,7 +9,7 @@ public class AccountDto {
     private BigInteger balance;
 
     public AccountDto(String title, Long id, BigInteger balance) {
-        this.title = "title";
+        this.title = title;
         this.id = id;
         this.balance = balance;
     }

@@ -83,10 +83,11 @@ public class AccountServiceImpl implements AccountService {
                 throw new IllegalStateException("The account does not correspond to any of yours");
         }
         var advisor = customer.getAdvisor();
-        return new AccountDto(customer.getFirstname(),
-                customer.getName(),
-                advisor.getFirstname(),
-                advisor.getName(),
-                account.getBalance().longValue());
+        // TODO - change title when title exists in database
+        return new AccountDto(
+                "title",
+                account.getId(),
+                account.getBalance()
+        );
     }
 }
