@@ -14,10 +14,10 @@
                 justify="center">
               <v-col cols="6">
                 <div class="pa-2 text-h6">
-                  Utilisateur : {{ selectedUser.nom }} {{ selectedUser.prenom }}
+                  Selectionné : {{ selectedUser.firstName }} {{ selectedUser.lastName }}
                 </div>
               </v-col>
-              <v-col
+<!--              <v-col
                   v-for="n in 1"
                   :key="n"
                   cols="4">
@@ -41,7 +41,7 @@
                     {{ selectedUser.balance }} €
                   </v-card-text>
                 </v-card>
-              </v-col>
+              </v-col>-->
               <v-col cols="1">
                 <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
               </v-col>
@@ -61,7 +61,7 @@
                 :rows-per-page="5"
                 @click-row="selectUser">
 
-              <template #item-actions="item">
+              <template #item-actions="item" v-if="can('advisor')">
                 <div class="operation-wrapper">
                   <!--deleteItem(item)-->
                   <v-icon icon="mdi-delete"  @click="openModalDeleteUser(item)"></v-icon>
@@ -82,9 +82,9 @@
                 @click-row="selectCompte"
             >
 
-              <template #item-actions="item">
+              <template #item-actions="item" v-if="can('advisor')">
                 <div class="operation-wrapper">
-                <searchBar></searchBar>          <v-icon icon="mdi-delete"  @click="openModalDeleteCompte(item)"></v-icon>
+                  <v-icon icon="mdi-delete"  @click="openModalDeleteCompte(item)"></v-icon>
                 </div>
               </template>
 
@@ -233,7 +233,8 @@
 import { useTheme } from 'vuetify'
 // import searchBar from '@/components/SearchBar'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
-
+import authHeader from "@/services/auth-header";
+import {can} from "@/utils"
 
 
 export default {
@@ -241,14 +242,17 @@ export default {
     const theme = useTheme();
 
     const headers = [
-      { text: "Identifiant", value: "id" },
-      { text: "NOM", value: "nom"},
-      { text: "PRENOM", value: "prenom"},
+      { text: "Identifiant", value: "userId" },
+      { text: "NOM", value: "lastName"},
+      { text: "PRENOM", value: "firstName"},
+
       { text: "ACTIONS", value: "actions"},
     ];
     const headersCompte = [
-      { text: "N°Compte", value: "id_compte" },
-      { text: "Détenteur", value: "user"},
+      { text: "N°Compte", value: "id" },
+      { text: "Titre", value: "title" },
+      { text: "Détenteur", value: "owner" },
+      { text: "Conseiller", value: "advisor"},
       { text: "solde", value: "balance"},
       { text: "ACTIONS", value: "actions"},
     ];
@@ -261,30 +265,24 @@ export default {
     ];
 
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les utilisateurs
-    const itemsUser = [
+/*    const itemsUser = [
       { id: "client-0001", nom: "client_1", prenom: "vuejs",balance: 30000},
       { id: "client-0002", nom: "client_2", prenom: "vuejs",balance: 125010},
       { id: "client-0003", nom: "client_3", prenom: "vuejs",balance: 2545},
       { id: "client-0004", nom: "client_4", prenom: "vuejs",balance: 100},
-    ];
+    ];*/
 
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les comptes
-    const itemsCompte = [
-      { id_compte: "compte-0001", user: "client_1", id_client: "client-0001", balance: 30000},
-      { id_compte: "compte-0002", user: "client_2", id_client: "client-0002", balance: 125010},
-      { id_compte: "compte-0003", user: "client_3", id_client: "client-0003", balance: 2545},
-      { id_compte: "compte-0004", user: "client_4", id_client: "client-0004" ,balance: 100},
-      { id_compte: "compte-0005", user: "client_3", id_client: "client-0003", balance: 2545},
-      { id_compte: "compte-0006", user: "client_4", id_client: "client-0004" ,balance: 100},
-      { id_compte: "compte-0007", user: "client_3", id_client: "client-0003", balance: 2545},
-      { id_compte: "compte-0008", user: "client_4", id_client: "client-0004" ,balance: 100},
-    ];
+    // const itemsCompte = [
+    //   { id: "compte-0001",title:"Livret A", owner: "client_1",advisor:"advisor_1", id_client: "client-0001", balance: 30000},
+    // ];
+
 
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les transactions
     const itemsTransaction = [];
 
     return {
-      theme,headers,headersCompte,headersTransaction,itemsCompte,itemsUser,itemsTransaction,
+      theme,headers,headersCompte,headersTransaction,itemsTransaction,
       toggleTheme: () => theme.global.name.value = theme.global.current.value.dark ? 'myCustomLightTheme' : 'dark'
     }
   },
@@ -294,8 +292,10 @@ export default {
   },
   data () {
     return {
-      itemsUserTable : this.itemsUser,
-      itemsCompteTable : this.itemsCompte,
+      itemsCompte : [],
+      itemsUser: [],
+      itemsUserTable : [],
+      itemsCompteTable : [],
       itemsTransactionTable : this.itemsTransaction,
       drawer: true,
       selectedUser: null,
@@ -307,6 +307,7 @@ export default {
     }
   },
   methods: {
+    can,
     //USER
     //permet de choisir un utilisateur
     selectUser(item){
@@ -445,6 +446,55 @@ export default {
       this.$data.dialogDeleteCompte = true;
     },
 
+    async getComptes(){
+
+      const user_connect = this.$store.state.auth.user.id;
+
+
+  // //prepare Fetch config
+  // const config = {
+  //   method: 'GET',
+  //   headers: {
+  //     'Authorization': `Bearer ${this.$store.state.token}`
+  //   }
+  // }
+  //config ready
+  try {
+    //TODO need the api path for delete a user
+    const response = await fetch(`/api/accounts/all/${user_connect}`,{
+      headers: authHeader()
+    });
+    const results = await response.json()
+    console.log(results)
+    this.$data.itemsCompte = results;
+    this.$data.itemsCompteTable = this.$data.itemsCompte;
+  }catch (error){
+    console.log(error);
+  }
+  },
+
+    async getUsers(){
+
+      const user_connect = this.$store.state.auth.user.id;
+
+      try {
+        //TODO need the api path for delete a user
+        const response = await fetch(`/api/user/all/${user_connect}`,{
+          headers: authHeader()
+        });
+        const results = await response.json()
+        console.log(results)
+        this.$data.itemsUser = results;
+        this.$data.itemsUserTable = this.$data.itemsUser;
+      }catch (error){
+        console.log(error);
+      }
+    }
+
+  },
+  beforeMount() {
+    this.getComptes()
+    this.getUsers()
   }
 }
 </script>

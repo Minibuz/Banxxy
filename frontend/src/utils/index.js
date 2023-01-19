@@ -17,3 +17,21 @@ export const useRouter = () => {
 }
 
 export const _ = null
+
+export const can = (role) => {
+    if(role===null){
+        return false;
+    }
+    const user = JSON.parse(localStorage.getItem('user'));
+    const role_user = user.roles[0]
+    //const r = this.$store.state.auth.user.roles[0]
+    if(role_user === null){
+        return false;
+    }
+    switch (role_user) {
+        case "ROLE_ADVISOR" :
+            return role === "advisor"
+        default :
+            return role === "customer"
+    }
+}

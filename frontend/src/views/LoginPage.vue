@@ -13,16 +13,16 @@
               <div class="col-lg-10 col-xl-7 mx-auto">
                 <h3 class="display-4">Banxxy</h3>
                 <p class="text-muted mb-4">Reactive Bank application for your safe transaction.</p>
-                <form>
+                <form @submit.prevent="handleLogin">
                   <div class="mb-3">
-                    <input id="inputEmail" type="email" placeholder="Email address" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4" />
+                    <input id="inputEmail" type="text" v-model="form.username" placeholder="username" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4" />
                   </div>
                   <div class="mb-3">
-                    <input id="inputPassword" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary" />
+                    <input id="inputPassword" type="password" v-model="form.password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary" />
                   </div>
 
                   <div class="d-grid gap-2 mt-2">
-                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" @click="handle">Sign in</button>
+                    <button  class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" >Sign in</button>
                   </div>
 
                 </form>
@@ -47,43 +47,29 @@ export default {
     }
   },
   methods: {
-    increment() {
-      this.$store.commit('increment')
-      console.log(this.$store.state.count)
-    },
 
     //this is a API Call example
-    async handleLogin(){
-      //when need to give token to the backEnd
-      const config = {
-        //choose the method you need
-        method: 'POST',
-        //don't change the headers
-        headers: {
-          'Authorization': `Bearer ${this.$store.state.token}`
-        },
-        //only if you use POST, PUT, PATCH ...
-        // this is an example
-        body: JSON.stringify({
-          userId: 1,
-          token:  'randomToken',
-        })
-      }
-      console.log(config)
-      try {
-        //to test if the fetch is working i use pokemon API
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon');
-        const { results: data } = await response.json()
-        console.log(data)
-      }catch (error){
-        console.log(error);
-      }
+    handleLogin(){
+        this.$store.dispatch("auth/login", this.form).then(data => {
+              //console.log(data)
+               this.$router.push({name:'home'});
+            },
+            (error) => {
+              this.loading = false;
+              this.message =
+                  (error.response &&
+                      error.response.data &&
+                      error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+            }
+        );
     },
     handle(){
       const user = this.$data.form
       this.$store.dispatch("auth/login", user).then(
           () => {
-            this.$router.push("/home");
+            this.$router.push("home");
           },
           (error) => {
             this.loading = false;

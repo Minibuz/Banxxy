@@ -4,16 +4,19 @@ class AuthService {
     static login(user) {
         return fetch(`${API_URL}signin`, {
             method: "POST",
-            body:{
+            headers : {
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
                 username: user.username,
                 password: user.password
-            }})
-            .then(response => {
-                if (response.data.accessToken) {
-                    localStorage.setItem('user', JSON.stringify(response.data));
+            })})
+            .then(response => response.json()).then(response => {
+                if (response.accessToken) {
+                    localStorage.setItem('user', JSON.stringify(response));
                 }
 
-                return response.data;
+                return response;
             });
     }
 
