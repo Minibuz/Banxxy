@@ -125,12 +125,7 @@ export default {
 
     },
     clear(){
-      this.customer.firstName = ''
-      this.customer.lastName = ''
-      this.customer.mail = ''
-      this.customer.userName = ''
-      this.customer.password = ''
-      this.customer.advisorId = ''
+      this.$refs.form.reset()
     }
   //  TODO handle invalid of submit
   }
