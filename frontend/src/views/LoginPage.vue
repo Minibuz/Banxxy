@@ -38,50 +38,32 @@
 </template>
 
 <script>
+import { useToast } from "vue-toastification";
+
 export default {
   name: 'LoginPage',
+  setup(){
+    const toast = useToast();
+    return { toast }
+  },
   data() {
     return {
-      form: {username: null, password: null},
+      form: {username: "", password: ""},
       errors: {}
     }
   },
   methods: {
 
-    //this is a API Call example
     handleLogin(){
-        this.$store.dispatch("auth/login", this.form).then(() => {
-              //console.log(data)
-               this.$router.push({name:'home'});
+        this.$store.dispatch("auth/login", this.form).then((response) => {
+              if(response.id) {
+                this.$router.push({name: 'home'});
+                return;
+              }
+              this.toast.error(response.message)
             },
-            (error) => {
-              this.loading = false;
-              this.message =
-                  (error.response &&
-                      error.response.data &&
-                      error.response.data.message) ||
-                  error.message ||
-                  error.toString();
-            }
         );
     },
-    handle(){
-      const user = this.$data.form
-      this.$store.dispatch("auth/login", user).then(
-          () => {
-            this.$router.push("home");
-          },
-          (error) => {
-            this.loading = false;
-            this.message =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-          }
-      );
-    }
   }
 }
 </script>

@@ -230,7 +230,9 @@
 
 
 <script>
+
 import { useTheme } from 'vuetify'
+import { useToast } from "vue-toastification";
 // import searchBar from '@/components/SearchBar'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
 import authHeader from "@/services/auth-header";
@@ -240,7 +242,7 @@ import {can} from "@/utils"
 export default {
   setup () {
     const theme = useTheme();
-
+    const toast = useToast();
     const headers = [
       { text: "Identifiant", value: "userId" },
       { text: "NOM", value: "lastName"},
@@ -283,7 +285,8 @@ export default {
 
     return {
       theme,headers,headersCompte,headersTransaction,itemsTransaction,
-      toggleTheme: () => theme.global.name.value = theme.global.current.value.dark ? 'myCustomLightTheme' : 'dark'
+      toggleTheme: () => theme.global.name.value = theme.global.current.value.dark ? 'myCustomLightTheme' : 'dark',
+      toast
     }
   },
   components: {
@@ -313,7 +316,7 @@ export default {
     selectUser(item){
       this.$data.selectedUser = item;
       this.$data.itemsCompteTable = this.itemsCompte.filter((i) => i.id_owner === item.userId);
-      console.table(item);
+      //console.table(item);
     },
 
     //supprime un utilisateur
@@ -324,34 +327,35 @@ export default {
       //probably need to inform user if nothing append but for the moment.. FUCK IT
       if(user === null) return;
 
-      //prepare Fetch config
       const config = {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${this.$store.state.token}`
-        }
+        headers: authHeader()
       }
       //config ready
       try {
         //TODO need the api path for delete a user
         const response = await fetch(`/api/user/${user.id}`,config);
         const { results: data } = await response.json()
-        console.log(data)
-      }catch (error){
-        console.log(error);
-      }
+        //console.log(data)
 
-      //TODO remove this part
-      //console.log(user)
-      //this.itemsUserTable= this.itemsUserTable.filter((item) => item.id !== user.id);
+        this.toast.success(`Utilisateur bien supprimer, ${data}`)
+      }catch (error){
+        //console.log(error.message);
+        this.toast.error(error.message)
+
+      }
     },
 
     //TODO selectCompte permet de selection un compte et fait un appel a l'api pour récuperer les transactions du compte
     selectCompte(compte){
-      this.$data.selectedCompte = compte;
-      console.table(compte);
+      if(this.selectedCompte!==null && this.selectedCompte.id === compte.id){
+        return;
+      }
+      //console.log(compte,toRaw(this.selectedCompte));
+      this.selectedCompte = compte;
       //call to the api to get transaction about this account
       this.GetTransactions(compte)
+
     },
 
     //supprime un Compte
@@ -365,18 +369,18 @@ export default {
       //prepare Fetch config
       const config = {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${this.$store.state.token}`
-        }
+        headers: authHeader()
       }
-      //config ready
+      //config readyid_compte
       try {
         //TODO need the api path for delete an account
         const response = await fetch(`/api/account/${compte.id_compte}`,config);
         const { results: data } = await response.json()
-        console.log(data)
+        //console.log(data)
+        this.toast.success(`Suppression du compte réussi, ${data}`)
       }catch (error){
-        console.log(error);
+        //console.log(error);
+        this.toast.error(error.message)
       }
 
       //TODO remove this part
@@ -392,19 +396,19 @@ export default {
       //prepare Fetch config
       const config = {
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${this.$store.state.token}`
-        }
+        headers: authHeader()
       }
       //config ready
       try {
         this.$data.loadingTransaction = true;
         //TODO need the api path for get transaction from an account
         const response = await fetch(`/api/transactions/${compte.id_compte}`,config);
-        const { results: data } = await response.json()
-        console.log(data)
+        //const { results: data } = await response.json()
+        await response.json()
+        //add transaction to the tableTransaction
       }catch (error){
-        console.log(error);
+        //console.log(error);
+        this.toast.error(error.message)
       }
 
       this.$data.itemsTransactionTable = [
@@ -461,15 +465,23 @@ export default {
   //config ready
   try {
 
-    const response = await fetch(`/api/accounts/detailed/${user_connect}`,{
+    let uri = `/api/accounts/detailed/${user_connect}`;
+
+    if(can('advisor')){
+      uri = `/api/accounts/attached/${user_connect}`;
+    }
+
+    const response = await fetch(uri,{
       headers: authHeader()
     });
-    const results = await response.json()
-    console.log(results)
-    this.$data.itemsCompte = results;
+    const data = await response.json()
+    //console.log(results)
+    this.$data.itemsCompte = data;
     this.$data.itemsCompteTable = this.$data.itemsCompte;
   }catch (error){
-    console.log(error);
+    //console.log(error);
+    this.toast.error(error.message)
+
   }
   },
 
@@ -483,11 +495,12 @@ export default {
           headers: authHeader()
         });
         const results = await response.json()
-        console.log(results)
+        //console.log(results)
         this.$data.itemsUser = results;
         this.$data.itemsUserTable = this.$data.itemsUser;
       }catch (error){
-        console.log(error);
+       //console.log(error);
+        this.toast.error(error.message)
       }
     }
 

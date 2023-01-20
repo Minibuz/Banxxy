@@ -58,8 +58,10 @@ export default {
     }
   },
   beforeMount() {
-    this.$data.user.username = this.$store.state.auth.user.username;
-    this.$data.user.role = this.$store.state.auth.user.roles[0];
+    if(this.$store.state.auth.user!==null) {
+      this.$data.user.username = this.$store.state.auth.user.username;
+      this.$data.user.role = this.$store.state.auth.user.roles[0];
+    }
   }
 }
 

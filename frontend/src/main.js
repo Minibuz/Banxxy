@@ -2,10 +2,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import Toast from "vue-toastification";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'vue3-easy-data-table/dist/style.css';
-
+import "vue-toastification/dist/index.css";
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -32,6 +33,23 @@ const myCustomLightTheme = {
     }
 }
 
+//for toaster
+const options = {
+    // You can set your default options here
+    position: "top-center",
+    timeout: 4660,
+    closeOnClick: true,
+    pauseOnFocusLoss: false,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: true,
+    hideProgressBar: false,
+    closeButton: "button",
+    icon: true,
+    rtl: false
+};
+
 const vuetify = createVuetify({
     icons: {
         defaultSet: 'mdi',
@@ -50,5 +68,5 @@ const vuetify = createVuetify({
     },
 })
 
-createApp(App).use(router).use(store).use(vuetify).mount('#app');
+createApp(App).use(router).use(store).use(vuetify).use(Toast,options).mount('#app');
 
