@@ -121,18 +121,18 @@ export default {
     },
 
     nameRules:[
-        v => !! v || "Name is required",
+        v => Boolean(v) || "Name is required",
         v => v.length <= 10 || "Name must be less than 10 characters"
     ],
     emailRules:[
-      v => !! v || "Email is required",
+      v => Boolean(v) || "Email is required",
       v => /.+@+/.test(v) || "Email must be valid"
     ],
     usernameRules:[
-      v => !! v || "Name is required",
+      v => Boolean(v) || "Name is required",
     ],
     passwordRules:[
-      v => !! v || "Password is required",
+      v => Boolean(v) || "Password is required",
       v => v.length >= 8 || "Password must be more than 8 characters"
     ],
     showPwd:false

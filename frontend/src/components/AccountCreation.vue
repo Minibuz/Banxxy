@@ -73,7 +73,7 @@ export default {
     },
 
     titleRules:[
-        v => !! v || "Title is required",
+        v => Boolean(v) || "Title is required",
         v => v.length <= 20 || "Name must be less than 20 characters"
     ],
   }),
