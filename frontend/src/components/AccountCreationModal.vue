@@ -40,7 +40,7 @@ import AccountCreation from "@/components/AccountCreation";
 export default {
   name: "AccountCreationModal",
   props:{
-    user: { id:null,firstName: "",lastName: ""},
+    user: Object,
   },
   components: {AccountCreation},
   setup(){
