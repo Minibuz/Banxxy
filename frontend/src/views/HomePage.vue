@@ -17,31 +17,11 @@
                   Selectionné : {{ selectedUser.firstName }} {{ selectedUser.lastName }}
                 </div>
               </v-col>
-<!--              <v-col
-                  v-for="n in 1"
-                  :key="n"
-                  cols="4">
 
-                <v-card
-                    class="mx-auto"
-                    color="#00000"
+              <v-col cols="4" v-if="can('advisor')">
+                <AccountCreationModal :user="selectedUser"></AccountCreationModal>
+              </v-col>
 
-                    max-width="344"
-                >
-                  <v-card-text>
-                    <v-list-item>
-                      <template v-slot:prepend>
-                        <v-icon icon="mdi-wallet"></v-icon>
-                      </template>
-                      <v-list-item-title>Balance</v-list-item-title>
-                    </v-list-item>
-                  </v-card-text>
-
-                  <v-card-text class="text-h4 px-5">
-                    {{ selectedUser.balance }} €
-                  </v-card-text>
-                </v-card>
-              </v-col>-->
               <v-col cols="1">
                 <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
               </v-col>
@@ -223,7 +203,6 @@
       </v-card>
     </v-dialog>
 
-
   </v-container>
 
 </template>
@@ -237,6 +216,7 @@ import { useToast } from "vue-toastification";
 import Vue3EasyDataTable from 'vue3-easy-data-table'
 import authHeader from "@/services/auth-header";
 import {can} from "@/utils"
+import AccountCreationModal from "@/components/AccountCreationModal";
 
 
 export default {
@@ -266,20 +246,6 @@ export default {
       { text: "Montant", value: "amount"},
     ];
 
-    //TODO pour le moment static mais sera remplacer par une requete qui recupere les utilisateurs
-/*    const itemsUser = [
-      { id: "client-0001", nom: "client_1", prenom: "vuejs",balance: 30000},
-      { id: "client-0002", nom: "client_2", prenom: "vuejs",balance: 125010},
-      { id: "client-0003", nom: "client_3", prenom: "vuejs",balance: 2545},
-      { id: "client-0004", nom: "client_4", prenom: "vuejs",balance: 100},
-    ];*/
-
-    //TODO pour le moment static mais sera remplacer par une requete qui recupere les comptes
-    // const itemsCompte = [
-    //   { id: "compte-0001",title:"Livret A", owner: "client_1",advisor:"advisor_1", id_client: "client-0001", balance: 30000},
-    // ];
-
-
     //TODO pour le moment static mais sera remplacer par une requete qui recupere les transactions
     const itemsTransaction = [];
 
@@ -291,7 +257,7 @@ export default {
   },
   components: {
     //searchBar,
-    EasyDataTable: Vue3EasyDataTable
+    EasyDataTable: Vue3EasyDataTable,AccountCreationModal
   },
   data () {
     return {
@@ -307,6 +273,9 @@ export default {
       dialogDeleteUser: false,
       dialogDeleteCompte: false,
       loadingTransaction: false,
+
+      dialogCreatUser: false,
+
     }
   },
   methods: {
