@@ -23,16 +23,16 @@ public class AccountController {
     public ResponseEntity<AccountDto> getAccountDetails(@PathVariable Integer accountId, @PathVariable Integer userId) {
         var opt = accountService.getAccountDetails(accountId, userId);
         return opt.isEmpty() ?
-                new ResponseEntity<>(opt.get(), HttpStatus.BAD_REQUEST) :
+                new ResponseEntity<>(null, HttpStatus.BAD_REQUEST) :
                 new ResponseEntity<>(opt.get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{userId}/{accountId}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable Integer userId, @PathVariable Integer accountId) {
+    public ResponseEntity<Boolean> deleteAccount(@PathVariable Integer userId, @PathVariable Integer accountId) {
         var result = accountService.deleteAccount(userId, accountId);
         return result ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                new ResponseEntity<>(true, HttpStatus.OK) :
+                new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/create")
