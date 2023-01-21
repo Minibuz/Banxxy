@@ -53,8 +53,7 @@ import { useToast } from "vue-toastification";
 export default {
   name: "AccountCreation",
   props:{
-    type: Object,
-    default: () =>({ id:null,firstName: "",lastName: ""})
+    user: Object,
   },
   setup(){
     const toast = useToast();
