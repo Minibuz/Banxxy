@@ -1,14 +1,16 @@
 package fr.esipe.banxxy.dto;
 
 public class UserReceivedDto {
-    private final String firstName;
-    private final String lastName;
-    private final String mail;
-    private final String userName;
-    private final String password;
-    private final String advisorId;
+    private String firstName;
+    private String lastName;
+    private String mail;
+    private String userName;
+    private String password;
+    private String advisorId;
 
-    public UserReceivedDto(String firstName, String lastName, String mail, String userName, String password, String advisorId) {
+    public UserReceivedDto(String firstName, String lastName,
+                           String mail, String userName,
+                           String password, String advisorId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
@@ -21,23 +23,47 @@ public class UserReceivedDto {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getMail() {
         return mail;
     }
 
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
     public String getUserName() {
         return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Long getAdvisorId() {
         return Long.getLong(advisorId);
+    }
+
+    public void setAdvisorId(String advisorId) {
+        this.advisorId = advisorId;
     }
 }
