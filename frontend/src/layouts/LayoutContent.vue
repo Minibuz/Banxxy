@@ -8,6 +8,8 @@
 
       <v-spacer></v-spacer>
 
+      <CustomerCreationModal v-if="can('advisor')"></CustomerCreationModal>
+
         <v-col cols = auto>
           <v-row dense class="font-weight-bold text-lg-subtitle-1 text-sm-subtitle-3"> {{user.username}} </v-row>
           <v-row dense class="text-grey-darken-1 text-caption">{{showUserRole(user.role)}}</v-row>
@@ -30,7 +32,11 @@
 
 <script>
 import { useTheme } from 'vuetify'
+import {can} from '@/utils'
+import CustomerCreationModal from "@/components/CustomerCreationModal";
 export default {
+
+  components: {CustomerCreationModal},
   setup() {
     const theme = useTheme()
     return {
@@ -44,6 +50,7 @@ export default {
     }
   },
   methods : {
+    can,
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');

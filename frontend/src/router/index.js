@@ -26,12 +26,6 @@ const routes = [
         component: () => import('@/views/Error404.vue'),
         meta: {requiresAuth: false, layout: 'blank'}
     },
-    {
-        path: '/customerCreation',
-        name: 'customerCreation',
-        component: () => import('@/views/CustomerCreation'),
-        meta: {requiresAuth: true, layout: 'content'}
-    },
 ]
 
 // 3. Create the router instance and pass the `routes` option
