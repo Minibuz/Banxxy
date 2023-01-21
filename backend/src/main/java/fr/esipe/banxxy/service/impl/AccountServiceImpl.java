@@ -58,13 +58,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Optional<AccountDto> getAccountDetails(Integer accountId, Integer userId) {
         var user = userRepository.findById(Integer.toUnsignedLong(userId));
-        if (!user.isPresent()) {
+        if (user.isEmpty())
             return Optional.empty();
-        }
         var customers = getCustomersFromUser(user.get(), userId);
-        if (customers.isEmpty()) {
+        if (customers.isEmpty())
             return Optional.empty();
-        }
         AccountEntity account;
         CustomerEntity customer;
         if (isAdvisor(user.get())) {
@@ -74,27 +72,21 @@ public class AccountServiceImpl implements AccountService {
                     .filter(acc -> Objects.equals(acc.getId(), accountId.longValue()))
                     .findFirst()
                     .orElse(null);
-            if (account == null) {
-                return Optional.empty();
-            }
-            customer = account.getCustomer();
         } else {
             customer = customers.iterator().next();
             account = customer.getAccounts().stream()
                     .filter(acc -> Objects.equals(acc.getId(), accountId.longValue()))
                     .findFirst()
                     .orElse(null);
-            if (account == null) {
-                return Optional.empty();
-            }
         }
+        if (account == null)
+            return Optional.empty();
         return Optional.of(new AccountDto(
                 "title",
                 account.getId(),
                 account.getBalance()
         ));
     }
-
 
     @Override
     public boolean deleteAccount(Integer userId, Integer accountId) {

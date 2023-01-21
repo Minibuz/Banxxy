@@ -41,11 +41,9 @@ public class AccountsServicesImpl implements AccountsService {
 
     private Set<CustomerEntity> getCustomersFromUser(UserEntity user, int id) {
         if (isAdvisor(user)) {
-            // TODO - replace exception thrown by returning error to api
             var advisor = advisorRepository.findById((long) id).orElseThrow();
             return advisor.getCustomers();
         } else if (isCustomer(user))
-            // TODO - replace exception thrown by returning error to api
             return Set.of(customerRepository.findById((long) id).orElseThrow());
         else return Set.of();
     }
@@ -54,14 +52,6 @@ public class AccountsServicesImpl implements AccountsService {
     public List<AccountDetailledDto> getAccounts(Integer userId) {
         var opt = userRepository.findById(Long.valueOf(userId));
         if (opt.isEmpty() || isAdvisor(opt.get()))
-            return List.of();
-        return getAllAccounts(userId);
-    }
-
-    @Override
-    public List<AccountDetailledDto> getAttachedAccounts(Integer userId) {
-        var opt = userRepository.findById(Long.valueOf(userId));
-        if (opt.isEmpty() || isCustomer(opt.get()))
             return List.of();
         return getAllAccounts(userId);
     }
@@ -94,6 +84,14 @@ public class AccountsServicesImpl implements AccountsService {
                         children.getId()
                 ))
         ));
+    }
+
+    @Override
+    public List<AccountDetailledDto> getAttachedAccounts(Integer userId) {
+        var opt = userRepository.findById(Long.valueOf(userId));
+        if (opt.isEmpty() || isCustomer(opt.get()))
+            return List.of();
+        return getAllAccounts(userId);
     }
 
     @Override
