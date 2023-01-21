@@ -60,7 +60,7 @@ public class AccountsServicesImpl implements AccountsService {
         customer.getAccounts().forEach(account ->
                 accountsList.add(new AccountDetailledDto(
                         account.getId(),
-                        "title",
+                        account.getTitle(),
                         customer.getFirstname(),
                         customer.getName(),
                         customer.getAdvisor().getFirstname(),
@@ -75,7 +75,7 @@ public class AccountsServicesImpl implements AccountsService {
         customer.getChildrens().forEach(children -> children.getAccounts().forEach(account ->
                 accountsList.add(new AccountDetailledDto(
                         account.getId(),
-                        "title",
+                        account.getTitle(),
                         children.getFirstname(),
                         children.getName(),
                         children.getAdvisor().getFirstname(),

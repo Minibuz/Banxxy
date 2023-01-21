@@ -18,6 +18,8 @@ public class AccountEntity {
 
     @Column(name = "balance", nullable = false)
     private BigInteger balance;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountFrom")
     private List<TransactionEntity> transactionsFrom;
@@ -50,6 +52,14 @@ public class AccountEntity {
 
     public void setBalance(BigInteger balance) {
         this.balance = balance;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<TransactionEntity> getTransactionsFrom() {

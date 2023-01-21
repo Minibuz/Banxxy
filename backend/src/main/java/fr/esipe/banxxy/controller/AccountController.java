@@ -27,19 +27,25 @@ public class AccountController {
                 new ResponseEntity<>(opt.get(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{userId}/{accountId}")
-    public ResponseEntity<Boolean> deleteAccount(@PathVariable Integer userId, @PathVariable Integer accountId) {
-        var result = accountService.deleteAccount(userId, accountId);
-        return result ?
-                new ResponseEntity<>(true, HttpStatus.OK) :
-                new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-    }
-
-    @PostMapping("/create")
+    @RequestMapping(value = "/create",
+            produces = "application/json",
+            consumes = "application/json",
+            method = RequestMethod.POST)
     public ResponseEntity<AccountDetailledDto> createAccount(@RequestBody AccountDetailledDto accountDto) {
         var opt = accountService.createAccount(accountDto);
         return opt.isEmpty() ?
                 new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED) :
                 new ResponseEntity<>(opt.get(), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/delete/{userId}/{accountId}",
+            produces = "application/json",
+            consumes = "application/json",
+            method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deleteAccount(@PathVariable Integer userId, @PathVariable Integer accountId) {
+        var result = accountService.deleteAccount(userId, accountId);
+        return result ?
+                new ResponseEntity<>(true, HttpStatus.OK) :
+                new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 }

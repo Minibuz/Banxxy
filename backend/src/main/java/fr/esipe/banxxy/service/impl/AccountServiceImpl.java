@@ -14,6 +14,7 @@ import fr.esipe.banxxy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
         if (account == null)
             return Optional.empty();
         return Optional.of(new AccountDto(
-                "title",
+                account.getTitle(),
                 account.getId(),
                 account.getBalance()
         ));
@@ -117,11 +118,11 @@ public class AccountServiceImpl implements AccountService {
         var opt = customerRepository.findById(accountDto.getId_owner());
         if (opt.isEmpty())
             return Optional.empty();
-        System.out.println("ARGH = " + opt.get());
         CustomerEntity customer = opt.get();
         AccountEntity account = new AccountEntity();
         account.setCustomer(customer);
-        account.setBalance(accountDto.getBalance());
+        account.setBalance(BigInteger.valueOf(0));
+        account.setTitle(accountDto.getTitle());
         account = accountRepository.save(account);
         AdvisorEntity advisor = advisorRepository.findByCustomersContaining(customer);
         String advisorFirstName = advisor.getFirstname();
