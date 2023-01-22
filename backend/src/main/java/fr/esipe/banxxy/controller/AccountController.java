@@ -22,26 +22,16 @@ public class AccountController {
     @GetMapping("/{accountId}/{userId}")
     public ResponseEntity<AccountDto> getAccountDetails(@PathVariable Integer accountId, @PathVariable Integer userId) {
         var opt = accountService.getAccountDetails(accountId, userId);
-        return opt.isEmpty() ?
-                new ResponseEntity<>(null, HttpStatus.BAD_REQUEST) :
-                new ResponseEntity<>(opt.get(), HttpStatus.OK);
+        return opt.map(accountDto -> new ResponseEntity<>(accountDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 
-    @RequestMapping(value = "/create",
-            produces = "application/json",
-            consumes = "application/json",
-            method = RequestMethod.POST)
+    @PostMapping(value = "/create")
     public ResponseEntity<AccountDetailledDto> createAccount(@RequestBody AccountDetailledDto accountDto) {
         var opt = accountService.createAccount(accountDto);
-        return opt.isEmpty() ?
-                new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED) :
-                new ResponseEntity<>(opt.get(), HttpStatus.CREATED);
+        return opt.map(accountDetailledDto -> new ResponseEntity<>(accountDetailledDto, HttpStatus.CREATED)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
-    @RequestMapping(value = "/delete/{userId}/{accountId}",
-            produces = "application/json",
-            consumes = "application/json",
-            method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/delete/{userId}/{accountId}")
     public ResponseEntity<Boolean> deleteAccount(@PathVariable Integer userId, @PathVariable Integer accountId) {
         var result = accountService.deleteAccount(userId, accountId);
         return result ?

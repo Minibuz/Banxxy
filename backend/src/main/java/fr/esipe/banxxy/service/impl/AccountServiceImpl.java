@@ -95,6 +95,7 @@ public class AccountServiceImpl implements AccountService {
         if (opt.isEmpty())
             return false;
         UserEntity user = opt.get();
+        System.out.println(user);
         if (isAdvisor(user)) {
             AdvisorEntity advisor = advisorRepository.findById(Long.valueOf(userId)).orElse(null);
             if (advisor == null)
