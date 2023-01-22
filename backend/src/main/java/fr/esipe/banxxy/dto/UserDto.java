@@ -1,9 +1,9 @@
 package fr.esipe.banxxy.dto;
 
 public class UserDto {
-    private final String firstName;
-    private final String lastName;
-    private final Long userId;
+    private String firstName;
+    private String lastName;
+    private Long userId;
 
     public UserDto(String firstName, String lastName, Long userId) {
         this.firstName = firstName;
@@ -21,5 +21,17 @@ public class UserDto {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

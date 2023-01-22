@@ -8,6 +8,17 @@ public class TransactionDto {
     private  Long account_to;
     private   String date;
 
+    public TransactionDto(Integer amount, String author,
+                          Long authorId, Long account_from,
+                          Long account_to, String date) {
+        this.amount = amount;
+        this.author = author;
+        this.authorId = authorId;
+        this.account_from = account_from;
+        this.account_to = account_to;
+        this.date = date;
+    }
+
     public void setAmount(Integer amount) {
         this.amount = amount;
     }
