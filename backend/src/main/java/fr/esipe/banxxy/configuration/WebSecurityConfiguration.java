@@ -59,6 +59,7 @@ public class WebSecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/signin").permitAll()
+                .antMatchers("/api/jms").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 
@@ -67,10 +68,5 @@ public class WebSecurityConfiguration {
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    public static void main(String[] args) {
-        var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        System.out.println(encoder.encode("0000"));
     }
 }
