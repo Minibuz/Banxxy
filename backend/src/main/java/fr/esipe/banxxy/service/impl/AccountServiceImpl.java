@@ -95,24 +95,30 @@ public class AccountServiceImpl implements AccountService {
         if (opt.isEmpty())
             return false;
         UserEntity user = opt.get();
-        System.out.println(user);
         if (isAdvisor(user)) {
             AdvisorEntity advisor = advisorRepository.findById(Long.valueOf(userId)).orElse(null);
             if (advisor == null)
                 return false;
             Set<CustomerEntity> customers = advisor.getCustomers();
             for (CustomerEntity customer : customers) {
-                if (customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId))))
-                    return true;
+                if (customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId)))) {
+                    accountRepository.deleteById(Long.valueOf(accountId));
+                    if(!accountRepository.existsById(Long.valueOf(accountId)))
+                        return true;
+                }
             }
         } else if (isCustomer(user)) {
             CustomerEntity customer = customerRepository.findById(Long.valueOf(userId)).orElse(null);
             if (customer == null)
                 return false;
-            return customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId)));
+            if(customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId)))) {
+                accountRepository.deleteById(Long.valueOf(accountId));
+                return !accountRepository.existsById(Long.valueOf(accountId));
+            }
         }
         return false;
     }
+
 
     @Override
     public Optional<AccountDetailledDto> createAccount(AccountDetailledDto accountDto) {
