@@ -3,7 +3,7 @@
   <div class="d-flex flex-column justify-center align-center h-100">
 
     <h3 class="display-6 text-grey" > Creation d'un compte pour le client {{user.firstName}} {{user.lastName}} </h3>
-    <p class="text-muted mb-4">Le compte serra vide</p>
+<!--    <p class="text-muted mb-4">Le compte serra vide</p>-->
   <v-card elevation="3" max-width="1000" class="w-100 p-2">
   <v-form
       ref="form"
@@ -55,7 +55,7 @@ export default {
   props:{
     user: {
       type: Object,
-      default: () =>({ id:null,firstName: "",lastName: ""})
+      default: () =>({ userId: null ,firstName: "",lastName: ""})
     }
   },
   setup(){
@@ -68,8 +68,8 @@ export default {
     valid:true,
     account:{
       title:'',
-      owner_id:'',
-      advisor_id:'',
+      id_owner:'',
+      id_advisor:'',
     },
 
     titleRules:[
@@ -81,7 +81,8 @@ export default {
      async handleCreation(){
        if(this.$refs.form.validate()){
          const account = this.$data.account
-         account.advisorId = this.$store.state.auth.user.id;
+         account.id_advisor = this.$store.state.auth.user.id;
+         account.id_owner = this.user.userId;
          //await CreateCustomer.create(myCustomer)
          const API_URL = '/api/account/create';
         try {
