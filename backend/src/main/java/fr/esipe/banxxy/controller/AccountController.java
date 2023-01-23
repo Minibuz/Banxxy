@@ -1,14 +1,12 @@
 package fr.esipe.banxxy.controller;
 
+import fr.esipe.banxxy.dto.AccountDetailledDto;
 import fr.esipe.banxxy.dto.AccountDto;
 import fr.esipe.banxxy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/account")
@@ -23,7 +21,21 @@ public class AccountController {
 
     @GetMapping("/{accountId}/{userId}")
     public ResponseEntity<AccountDto> getAccountDetails(@PathVariable Integer accountId, @PathVariable Integer userId) {
-        var accounts = accountService.getAccountDetails(accountId, userId);
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
+        var opt = accountService.getAccountDetails(accountId, userId);
+        return opt.map(accountDto -> new ResponseEntity<>(accountDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+    }
+
+    @PostMapping(value = "/create")
+    public ResponseEntity<AccountDetailledDto> createAccount(@RequestBody AccountDetailledDto accountDto) {
+        var opt = accountService.createAccount(accountDto);
+        return opt.map(accountDetailledDto -> new ResponseEntity<>(accountDetailledDto, HttpStatus.CREATED)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+    }
+
+    @DeleteMapping(value = "/delete/{userId}/{accountId}")
+    public ResponseEntity<Boolean> deleteAccount(@PathVariable Integer userId, @PathVariable Integer accountId) {
+        var result = accountService.deleteAccount(userId, accountId);
+        return result ?
+                new ResponseEntity<>(true, HttpStatus.OK) :
+                new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 }

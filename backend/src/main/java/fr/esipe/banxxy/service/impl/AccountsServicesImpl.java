@@ -41,11 +41,9 @@ public class AccountsServicesImpl implements AccountsService {
 
     private Set<CustomerEntity> getCustomersFromUser(UserEntity user, int id) {
         if (isAdvisor(user)) {
-            // TODO - replace exception thrown by returning error to api
             var advisor = advisorRepository.findById((long) id).orElseThrow();
             return advisor.getCustomers();
         } else if (isCustomer(user))
-            // TODO - replace exception thrown by returning error to api
             return Set.of(customerRepository.findById((long) id).orElseThrow());
         else return Set.of();
     }
@@ -58,19 +56,11 @@ public class AccountsServicesImpl implements AccountsService {
         return getAllAccounts(userId);
     }
 
-    @Override
-    public List<AccountDetailledDto> getAttachedAccounts(Integer userId) {
-        var opt = userRepository.findById(Long.valueOf(userId));
-        if (opt.isEmpty() || isCustomer(opt.get()))
-            return List.of();
-        return getAllAccounts(userId);
-    }
-
     private void addCustomerAccountsToList(CustomerEntity customer, List<AccountDetailledDto> accountsList) {
         customer.getAccounts().forEach(account ->
                 accountsList.add(new AccountDetailledDto(
                         account.getId(),
-                        "title",
+                        account.getTitle(),
                         customer.getFirstname(),
                         customer.getName(),
                         customer.getAdvisor().getFirstname(),
@@ -85,7 +75,7 @@ public class AccountsServicesImpl implements AccountsService {
         customer.getChildrens().forEach(children -> children.getAccounts().forEach(account ->
                 accountsList.add(new AccountDetailledDto(
                         account.getId(),
-                        "title",
+                        account.getTitle(),
                         children.getFirstname(),
                         children.getName(),
                         children.getAdvisor().getFirstname(),
@@ -94,6 +84,14 @@ public class AccountsServicesImpl implements AccountsService {
                         children.getId()
                 ))
         ));
+    }
+
+    @Override
+    public List<AccountDetailledDto> getAttachedAccounts(Integer userId) {
+        var opt = userRepository.findById(Long.valueOf(userId));
+        if (opt.isEmpty() || isCustomer(opt.get()))
+            return List.of();
+        return getAllAccounts(userId);
     }
 
     @Override
