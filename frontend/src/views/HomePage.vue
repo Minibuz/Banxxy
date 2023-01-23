@@ -9,24 +9,28 @@
         <!--selected user -->
         <v-fade-transition>
           <div v-if="selectedUser!=null" class="py-2" >
-            <v-row
-                align="center"
-                justify="center">
-              <v-col cols="6">
+            <v-row>
+              <v-col cols="9">
                 <div class="pa-2 text-h6">
                   Selectionné : {{ selectedUser.firstName }} {{ selectedUser.lastName }}
                 </div>
               </v-col>
 
+              <v-col cols="1">
+                <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
+              </v-col>
+            </v-row>
+
+            <v-row>
               <v-col cols="4" v-if="can('advisor')">
                 <AccountCreationModal :user="selectedUser"></AccountCreationModal>
               </v-col>
 
-              <v-col cols="1">
-                <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
+              <v-col cols="4" v-if="can('advisor')">
+                <ChequeRequest>Demander chequier</ChequeRequest>
               </v-col>
-
             </v-row>
+
           </div>
           </v-fade-transition>
 
@@ -217,6 +221,7 @@ import Vue3EasyDataTable from 'vue3-easy-data-table'
 import authHeader from "@/services/auth-header";
 import {can} from "@/utils"
 import AccountCreationModal from "@/components/AccountCreationModal";
+import ChequeRequest from "@/components/ChequeRequest";
 
 
 export default {
@@ -256,6 +261,7 @@ export default {
     }
   },
   components: {
+    ChequeRequest,
     //searchBar,
     EasyDataTable: Vue3EasyDataTable,AccountCreationModal
   },
