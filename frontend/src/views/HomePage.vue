@@ -23,11 +23,11 @@
 
             <v-row>
               <v-col cols="4" v-if="can('advisor')">
-                <AccountCreationModal :user="selectedUser"></AccountCreationModal>
+                <AccountCreationModal :user="selectedUser" @resetComptes="getComptes"></AccountCreationModal>
               </v-col>
 
               <v-col cols="4" v-if="can('advisor')">
-                <ChequeRequest>Demander chequier</ChequeRequest>
+                <ChequeRequest></ChequeRequest>
               </v-col>
             </v-row>
 
@@ -199,7 +199,7 @@
           <v-btn
               color="danger"
               variant="text"
-              @click="dialog = false"
+              @click="deleteCompte(selectedCompte)"
           >
             Supprimer
           </v-btn>
@@ -326,7 +326,7 @@ export default {
       if(this.selectedCompte!==null && this.selectedCompte.id === compte.id){
         return;
       }
-      //console.log(compte,toRaw(this.selectedCompte));
+      //console.log(compte);
       this.selectedCompte = compte;
       //call to the api to get transaction about this account
       this.GetTransactions(compte)
@@ -349,10 +349,13 @@ export default {
       //config readyid_compte
       try {
         //TODO need the api path for delete an account
-        const response = await fetch(`/api/account/${compte.id_compte}`,config);
-        const { results: data } = await response.json()
+        const response = await fetch(`/api/account/delete/${compte.id_owner}/${compte.id}`,config);
+        await response.json()
         //console.log(data)
-        this.toast.success(`Suppression du compte réussi, ${data}`)
+        this.toast.success(`Suppression du compte réussi`)
+        this.dialogDeleteCompte = false;
+        this.getComptes();
+
       }catch (error){
         //console.log(error);
         this.toast.error(error.message)
@@ -377,13 +380,13 @@ export default {
       try {
         this.$data.loadingTransaction = true;
         //TODO need the api path for get transaction from an account
-        const response = await fetch(`/api/transactions/${compte.id_compte}`,config);
+        const response = await fetch(`/api/transactions/${compte.id}`,config);
         //const { results: data } = await response.json()
         await response.json()
         //add transaction to the tableTransaction
       }catch (error){
         //console.log(error);
-        this.toast.error(error.message)
+        //this.toast.error(error.message)
       }
 
       this.$data.itemsTransactionTable = [
@@ -440,7 +443,7 @@ export default {
   //config ready
   try {
 
-    let uri = `/api/accounts/detailed/${user_connect}`;
+    let uri = `/api/accounts/${user_connect}`;
 
     if(can('advisor')){
       uri = `/api/accounts/attached/${user_connect}`;
