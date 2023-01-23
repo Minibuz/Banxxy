@@ -28,7 +28,7 @@
         <v-spacer></v-spacer>
       </v-toolbar>
 
-      <AccountCreation :user="user" @close="dialogCreatAccount= false"></AccountCreation>
+      <AccountCreation :user="user" @close="close"></AccountCreation>
 
     </v-card>
   </v-dialog>
@@ -41,7 +41,7 @@ export default {
   props:{
     user: {
       type: Object,
-      default: () =>({ id:null,firstName: "",lastName: ""})
+      default: () =>({ userId: null,firstName: "",lastName: ""})
     }
   },
   components: {AccountCreation},
@@ -55,6 +55,12 @@ export default {
       dialogCreatAccount: false,
     }
   },
+  methods:{
+    close(){
+      this.dialogCreatAccount= false;
+      this.$emit("resetComptes");
+    }
+  }
 }
 </script>
 
