@@ -1,4 +1,4 @@
-package fr.esipe.banxxy.dto.request;
+package fr.esipe.banxxy.dto.auth.request;
 
 public class LoginRequest {
 

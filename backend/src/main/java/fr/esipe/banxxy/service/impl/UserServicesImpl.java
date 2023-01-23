@@ -3,9 +3,9 @@ package fr.esipe.banxxy.service.impl;
 import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.UserEntity;
-import fr.esipe.banxxy.dto.UserDetailDto;
-import fr.esipe.banxxy.dto.UserDto;
-import fr.esipe.banxxy.dto.UserReceivedDto;
+import fr.esipe.banxxy.dto.user.UserDetailDto;
+import fr.esipe.banxxy.dto.user.UserDto;
+import fr.esipe.banxxy.dto.user.UserReceivedDto;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
@@ -80,11 +80,6 @@ public class UserServicesImpl implements UserService {
         return childrenDtoList;
     }
 
-    /**
-     * Get the list of users depending on the user received
-     * @param userId the id of the user received
-     * @return the list of children if the user is a customer, the list of customers if the user is an advisor, otherwise an empty Collection
-     */
     @Override
     public List<UserDto> getDependantUser(Long userId) {
         var advisor = getAdvisor(userId);
@@ -114,11 +109,6 @@ public class UserServicesImpl implements UserService {
         );
     }
 
-    /**
-     * Get an objet containing details of the user associated with the userId given
-     * @param userId the id of the user
-     * @return objet containing details of the user
-     */
     @Override
     public UserDetailDto getUser(Long userId) {
         var advisor = getAdvisor(userId);
@@ -133,11 +123,6 @@ public class UserServicesImpl implements UserService {
 
     }
 
-    /**
-     * Create a customer based on datas received
-     * @param userReceivedDto datas about de customer to create
-     * @return an Optional containing the user if the creation succeed, otherwise empty
-     */
     @Override
     public Optional<UserEntity> createUser(UserReceivedDto userReceivedDto) {
         UserEntity user = new UserEntity();

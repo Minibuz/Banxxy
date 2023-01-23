@@ -2,9 +2,8 @@ package fr.esipe.banxxy.controller;
 
 import fr.esipe.banxxy.configuration.jwt.JwtUtils;
 import fr.esipe.banxxy.configuration.services.UserDetailsImpl;
-import fr.esipe.banxxy.dto.request.LoginRequest;
-import fr.esipe.banxxy.dto.response.JwtResponse;
-import fr.esipe.banxxy.repository.UserRepository;
+import fr.esipe.banxxy.dto.auth.request.LoginRequest;
+import fr.esipe.banxxy.dto.auth.response.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,14 +20,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthentificationController {
-    @Autowired
-    AuthenticationManager authenticationManager;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    AuthentificationController(AuthenticationManager authenticationManager,
+        JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {

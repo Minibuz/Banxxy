@@ -4,8 +4,8 @@ import fr.esipe.banxxy.dao.AccountEntity;
 import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.UserEntity;
-import fr.esipe.banxxy.dto.AccountDetailledDto;
-import fr.esipe.banxxy.dto.AccountDto;
+import fr.esipe.banxxy.dto.account.AccountDetailedDto;
+import fr.esipe.banxxy.dto.account.AccountDto;
 import fr.esipe.banxxy.repository.AccountRepository;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
@@ -121,7 +121,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public Optional<AccountDetailledDto> createAccount(AccountDetailledDto accountDto) {
+    public Optional<AccountDetailedDto> createAccount(AccountDetailedDto accountDto) {
         var opt = customerRepository.findById(accountDto.getId_owner());
         if (opt.isEmpty())
             return Optional.empty();
@@ -134,7 +134,7 @@ public class AccountServiceImpl implements AccountService {
         AdvisorEntity advisor = advisorRepository.findByCustomersContaining(customer);
         String advisorFirstName = advisor.getFirstname();
         String advisorLastName = advisor.getName();
-        return Optional.of(new AccountDetailledDto(
+        return Optional.of(new AccountDetailedDto(
                 account.getId(),
                 accountDto.getTitle(),
                 customer.getFirstname(),

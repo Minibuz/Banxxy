@@ -1,7 +1,7 @@
 package fr.esipe.banxxy.service;
 
-import fr.esipe.banxxy.dto.AccountDetailledDto;
-import fr.esipe.banxxy.dto.AccountDto;
+import fr.esipe.banxxy.dto.account.AccountDetailedDto;
+import fr.esipe.banxxy.dto.account.AccountDto;
 
 import java.util.Optional;
 
@@ -10,5 +10,5 @@ public interface AccountService {
 
     boolean deleteAccount(Integer userId, Integer accountId);
 
-    Optional<AccountDetailledDto> createAccount(AccountDetailledDto accountDto);
+    Optional<AccountDetailedDto> createAccount(AccountDetailedDto accountDto);
 }

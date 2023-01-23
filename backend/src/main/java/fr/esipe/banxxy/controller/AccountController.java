@@ -1,7 +1,7 @@
 package fr.esipe.banxxy.controller;
 
-import fr.esipe.banxxy.dto.AccountDetailledDto;
-import fr.esipe.banxxy.dto.AccountDto;
+import fr.esipe.banxxy.dto.account.AccountDetailedDto;
+import fr.esipe.banxxy.dto.account.AccountDto;
 import fr.esipe.banxxy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,9 @@ public class AccountController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<AccountDetailledDto> createAccount(@RequestBody AccountDetailledDto accountDto) {
+    public ResponseEntity<AccountDetailedDto> createAccount(@RequestBody AccountDetailedDto accountDto) {
         var opt = accountService.createAccount(accountDto);
-        return opt.map(accountDetailledDto -> new ResponseEntity<>(accountDetailledDto, HttpStatus.CREATED)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+        return opt.map(accountDetailedDto -> new ResponseEntity<>(accountDetailedDto, HttpStatus.CREATED)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
     @DeleteMapping(value = "/delete/{userId}/{accountId}")

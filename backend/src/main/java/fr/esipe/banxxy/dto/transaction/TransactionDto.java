@@ -1,12 +1,12 @@
-package fr.esipe.banxxy.dto;
+package fr.esipe.banxxy.dto.transaction;
 
 public class TransactionDto {
-    private  Integer amount;
-    private  String author;
-    private  Long authorId;
-    private  Long account_from;
-    private  Long account_to;
-    private   String date;
+    private Integer amount;
+    private String author;
+    private Long authorId;
+    private Long account_from;
+    private Long account_to;
+    private String date;
 
     public TransactionDto(Integer amount, String author,
                           Long authorId, Long account_from,

@@ -1,9 +1,9 @@
 package fr.esipe.banxxy.controller;
 
 import fr.esipe.banxxy.dao.UserEntity;
-import fr.esipe.banxxy.dto.UserDetailDto;
-import fr.esipe.banxxy.dto.UserDto;
-import fr.esipe.banxxy.dto.UserReceivedDto;
+import fr.esipe.banxxy.dto.user.UserDetailDto;
+import fr.esipe.banxxy.dto.user.UserDto;
+import fr.esipe.banxxy.dto.user.UserReceivedDto;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

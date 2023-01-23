@@ -1,4 +1,4 @@
-package fr.esipe.banxxy.dto;
+package fr.esipe.banxxy.dto.user;
 
 public class UserDto {
     private String firstName;
