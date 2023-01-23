@@ -1,8 +1,8 @@
-package fr.esipe.banxxy.dto;
+package fr.esipe.banxxy.dto.account;
 
 import java.math.BigInteger;
 
-public class AccountDetailledDto {
+public class AccountDetailedDto {
 
     private Long id;
     private String title;
@@ -11,10 +11,10 @@ public class AccountDetailledDto {
     private BigInteger balance;
     private Long id_owner;
 
-    public AccountDetailledDto(Long id, String title,
-                               String ownerFirstName, String ownerLatName,
-                               String advisorFirstName, String advisorLastName,
-                               BigInteger balance, Long id_owner) {
+    public AccountDetailedDto(Long id, String title,
+                              String ownerFirstName, String ownerLatName,
+                              String advisorFirstName, String advisorLastName,
+                              BigInteger balance, Long id_owner) {
         this.id = id;
         this.title = title;
         this.owner = ownerFirstName + " " + ownerLatName;

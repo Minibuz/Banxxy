@@ -1,6 +1,6 @@
 package fr.esipe.banxxy.controller;
 
-import fr.esipe.banxxy.dto.AccountDetailledDto;
+import fr.esipe.banxxy.dto.account.AccountDetailedDto;
 import fr.esipe.banxxy.service.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class AccountsController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<AccountDetailledDto>> getAccounts(@PathVariable Integer userId) {
+    public ResponseEntity<List<AccountDetailedDto>> getAccounts(@PathVariable Integer userId) {
         var accounts = accountsService.getAccounts(userId);
         return accounts.isEmpty() ?
                 new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :
@@ -29,7 +29,7 @@ public class AccountsController {
     }
 
     @GetMapping("/attached/{userId}")
-    public ResponseEntity<List<AccountDetailledDto>> getAttachedAccounts(@PathVariable Integer userId) {
+    public ResponseEntity<List<AccountDetailedDto>> getAttachedAccounts(@PathVariable Integer userId) {
         var accounts = accountsService.getAttachedAccounts(userId);
         return accounts.isEmpty() ?
                 new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :
@@ -37,7 +37,7 @@ public class AccountsController {
     }
 
     @GetMapping("/all/{userId}")
-    public ResponseEntity<List<AccountDetailledDto>> getAllAccounts(@PathVariable Integer userId) {
+    public ResponseEntity<List<AccountDetailedDto>> getAllAccounts(@PathVariable Integer userId) {
         var accounts = accountsService.getAllAccounts(userId);
         return accounts.isEmpty() ?
                 new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :

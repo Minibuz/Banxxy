@@ -1,4 +1,4 @@
-package fr.esipe.banxxy.dto.response;
+package fr.esipe.banxxy.dto.auth.response;
 
 import java.util.List;
 

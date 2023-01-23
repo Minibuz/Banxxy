@@ -17,6 +17,10 @@ public class RedirectionController implements ErrorController {
         return "forward:/";
     }
 
+
+    // This part is just an example, we won't use it like that in the near future.
+    // This will be used for the command of the chequier made either by a customer
+    // or an advisor.
     @Autowired
     private JmsTemplate jmsTemplate;
 

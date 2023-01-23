@@ -5,7 +5,7 @@ import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.TransactionEntity;
 import fr.esipe.banxxy.dao.UserEntity;
-import fr.esipe.banxxy.dto.TransactionDto;
+import fr.esipe.banxxy.dto.transaction.TransactionDto;
 import fr.esipe.banxxy.repository.*;
 import fr.esipe.banxxy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +51,13 @@ public class TransactionServiceImpl implements TransactionService {
 
        var transactionDtoList = new ArrayList<TransactionDto>();
        transactions.forEach(transaction ->{
-           var transactionDto = new TransactionDto();
-           transactionDto.setAuthor(transaction.getAuthor().getName());
-           transactionDto.setAccount_from(transaction.getAccountFrom().getId());
-           transactionDto.setAccount_to(transaction.getAccountTo().getId());
-           transactionDto.setDate(transaction.getDate().toString());
+           var transactionDto = new TransactionDto(
+                   transaction.getAmount(),
+                   transaction.getAuthor().getName(),
+                   transaction.getAuthor().getId(),
+                   transaction.getAccountFrom().getId(),
+                   transaction.getAccountTo().getId(),
+                   transaction.getDate().toString());
            transactionDtoList.add(transactionDto);
 
        });
@@ -74,7 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (customers.isEmpty())
             throw new NoSuchElementException("No customer found for this user");
 
-        Integer nbTransaction = 0;
+        int nbTransaction = 0;
         for (var customer : customers) {
             nbTransaction += customer.getAccounts().stream()
                     .map(accountEntity -> accountEntity.getTransactionsFrom().size())

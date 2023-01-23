@@ -3,7 +3,7 @@ package fr.esipe.banxxy.service.impl;
 import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
 import fr.esipe.banxxy.dao.UserEntity;
-import fr.esipe.banxxy.dto.AccountDetailledDto;
+import fr.esipe.banxxy.dto.account.AccountDetailedDto;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
@@ -49,16 +49,16 @@ public class AccountsServicesImpl implements AccountsService {
     }
 
     @Override
-    public List<AccountDetailledDto> getAccounts(Integer userId) {
+    public List<AccountDetailedDto> getAccounts(Integer userId) {
         var opt = userRepository.findById(Long.valueOf(userId));
         if (opt.isEmpty() || isAdvisor(opt.get()))
             return List.of();
         return getAllAccounts(userId);
     }
 
-    private void addCustomerAccountsToList(CustomerEntity customer, List<AccountDetailledDto> accountsList) {
+    private void addCustomerAccountsToList(CustomerEntity customer, List<AccountDetailedDto> accountsList) {
         customer.getAccounts().forEach(account ->
-                accountsList.add(new AccountDetailledDto(
+                accountsList.add(new AccountDetailedDto(
                         account.getId(),
                         account.getTitle(),
                         customer.getFirstname(),
@@ -71,9 +71,9 @@ public class AccountsServicesImpl implements AccountsService {
         );
     }
 
-    private void addChildrenAccountsToList(CustomerEntity customer, List<AccountDetailledDto> accountsList) {
+    private void addChildrenAccountsToList(CustomerEntity customer, List<AccountDetailedDto> accountsList) {
         customer.getChildrens().forEach(children -> children.getAccounts().forEach(account ->
-                accountsList.add(new AccountDetailledDto(
+                accountsList.add(new AccountDetailedDto(
                         account.getId(),
                         account.getTitle(),
                         children.getFirstname(),
@@ -87,7 +87,7 @@ public class AccountsServicesImpl implements AccountsService {
     }
 
     @Override
-    public List<AccountDetailledDto> getAttachedAccounts(Integer userId) {
+    public List<AccountDetailedDto> getAttachedAccounts(Integer userId) {
         var opt = userRepository.findById(Long.valueOf(userId));
         if (opt.isEmpty() || isCustomer(opt.get()))
             return List.of();
@@ -95,7 +95,7 @@ public class AccountsServicesImpl implements AccountsService {
     }
 
     @Override
-    public List<AccountDetailledDto> getAllAccounts(Integer userId) {
+    public List<AccountDetailedDto> getAllAccounts(Integer userId) {
         var opt = userRepository.findById(Long.valueOf(userId));
         if (opt.isEmpty())
             return List.of();
@@ -103,7 +103,7 @@ public class AccountsServicesImpl implements AccountsService {
         Set<CustomerEntity> customers = getCustomersFromUser(user, userId);
         if (customers.isEmpty())
             return List.of();
-        var accountsList = new ArrayList<AccountDetailledDto>();
+        var accountsList = new ArrayList<AccountDetailedDto>();
         customers.forEach(customer -> {
             addCustomerAccountsToList(customer, accountsList);
             if (isCustomer(user)) {
