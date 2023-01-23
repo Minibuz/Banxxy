@@ -56,7 +56,7 @@ export default {
 
     handleLogin(){
         this.$store.dispatch("auth/login", this.form).then((response) => {
-              if(response.id) {
+              if(response.id!==null) {
                 this.$router.push({name: 'home'});
                 return;
               }

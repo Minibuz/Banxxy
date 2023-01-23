@@ -3,7 +3,7 @@
   <div class="d-flex flex-column justify-center align-center h-100">
 
     <h3 class="display-5 text-grey" > Creation d'un client</h3>
-    <p class="text-muted mb-4">Un compte par défaut sera ajouter au client </p>
+    <p class="text-muted mb-4">Un compte par défaut sera ajouté au client </p>
   <v-card elevation="3" max-width="1000" class="w-100 p-2">
   <v-form
       ref="form"
