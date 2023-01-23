@@ -3,15 +3,14 @@
       variant="flat"
       color="primary"
       rounded="lg"
-      @click="dialogCreatUser=true"
-  class="mr-2">
-    Créer un compte
+      @click="dialogCreatAccount=true"
+      class="mr-2">
+      Créer un compte
   </v-btn>
 
   <v-dialog
-      v-model="dialogCreatUser"
+      v-model="dialogCreatAccount"
       fullscreen
-
   >
     <v-card >
       <v-toolbar
@@ -21,7 +20,7 @@
         <v-btn
             icon
             dark
-            @click="dialogCreatUser = false"
+            @click="dialogCreatAccount = false"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -29,7 +28,7 @@
         <v-spacer></v-spacer>
       </v-toolbar>
 
-      <AccountCreation :user="user" @close="dialogCreatUser= false"></AccountCreation>
+      <AccountCreation :user="user" @close="dialogCreatAccount= false"></AccountCreation>
 
     </v-card>
   </v-dialog>
@@ -53,7 +52,7 @@ export default {
   },
   data() {
     return{
-      dialogCreatUser: false,
+      dialogCreatAccount: false,
     }
   },
 }
