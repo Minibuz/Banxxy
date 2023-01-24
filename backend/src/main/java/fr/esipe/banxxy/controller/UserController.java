@@ -45,12 +45,18 @@ public class UserController {
      * @param userReceivedDto an object containing datas to create the user
      * @return The user created and OK if the creation worked, otherwise null and UNAUTHORIZED
      */
-    @RequestMapping(value = "/customer/create",
+    @PostMapping(value = "/customer/create",
             produces = "application/json",
-            consumes = "application/json",
-            method = RequestMethod.POST)
+            consumes = "application/json")
     public ResponseEntity<UserEntity> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
-        return userService.createUser(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+        return userService.createCustomer(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+    }
+
+    @PostMapping(value = "/advisor/create",
+            produces = "application/json",
+            consumes = "application/json")
+    public ResponseEntity<UserEntity> createAdvisor(@RequestBody UserReceivedDto userReceivedDto) {
+        return userService.createAdvisor(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
     /**

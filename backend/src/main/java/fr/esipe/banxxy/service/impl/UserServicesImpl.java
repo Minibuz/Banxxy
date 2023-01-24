@@ -124,7 +124,7 @@ public class UserServicesImpl implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> createUser(UserReceivedDto userReceivedDto) {
+    public Optional<UserEntity> createCustomer(UserReceivedDto userReceivedDto) {
         UserEntity user = new UserEntity();
         user.setFirstname(userReceivedDto.getFirstName());
         user.setName(userReceivedDto.getLastName());
@@ -137,7 +137,21 @@ public class UserServicesImpl implements UserService {
         customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
         customerRepository.save(customer);
         return userRepository.findById(userCreated.getId());
+    }
 
+    @Override
+    public Optional<UserEntity> createAdvisor(UserReceivedDto userReceivedDto) {
+//        UserEntity user = new UserEntity();
+//        user.setFirstname(userReceivedDto.getFirstName());
+//        user.setName(userReceivedDto.getLastName());
+//        user.setUsername(userReceivedDto.getUserName());
+//        user.setPassword(userReceivedDto.getPassword());
+//        user.setMail(userReceivedDto.getMail());
+//        user.setType("advisor");
+//        var userCreated = userRepository.save(user);
+//        AdvisorEntity advisor = new AdvisorEntity();
+//        advisor.s
+        return Optional.empty();
     }
 
 }

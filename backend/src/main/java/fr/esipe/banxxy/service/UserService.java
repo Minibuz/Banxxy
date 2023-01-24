@@ -29,5 +29,12 @@ public interface UserService {
      * @param userReceivedDto datas about de customer to create
      * @return an Optional containing the user if the creation succeed, otherwise empty
      */
-    Optional<UserEntity> createUser(UserReceivedDto userReceivedDto);
+    Optional<UserEntity> createCustomer(UserReceivedDto userReceivedDto);
+
+    /**
+     * Create a customer based on datas received
+     * @param userReceivedDto datas about de customer to create
+     * @return an Optional containing the user if the creation succeed, otherwise empty
+     */
+    Optional<UserEntity> createAdvisor(UserReceivedDto userReceivedDto);
 }
