@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/transaction")
 public class TransactionController {
@@ -20,14 +18,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/{accountId}/{userId}")
-    public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
-                                                              @PathVariable Long userId) {
-        var transactions = transactionService.getTransactionList(accountId, userId);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
-    }
-
-    @GetMapping("/number{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<Integer> getNbTransaction(@PathVariable Long userId){
         var nbTransactions = transactionService.getNbTransactions(userId);
         return new ResponseEntity<>(nbTransactions,HttpStatus.OK);
