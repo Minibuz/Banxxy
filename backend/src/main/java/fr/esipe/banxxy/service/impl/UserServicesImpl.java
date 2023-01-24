@@ -135,6 +135,7 @@ public class UserServicesImpl implements UserService {
         var userCreated = userRepository.save(user);
         CustomerEntity customer = new CustomerEntity();
         customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
+        customer.setId(userCreated.getId());
         customerRepository.save(customer);
         return userRepository.findById(userCreated.getId());
     }
