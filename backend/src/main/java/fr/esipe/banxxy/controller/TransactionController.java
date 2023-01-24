@@ -20,20 +20,20 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/apit/transactions/{accountId}/{userId}")
+    @GetMapping("/{accountId}/{userId}")
     public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
                                                               @PathVariable Long userId) {
         var transactions = transactionService.getTransactionList(accountId, userId);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
-    @GetMapping("/api/transaction/number{userId}")
+    @GetMapping("/number{userId}")
     public ResponseEntity<Integer> getNbTransaction(@PathVariable Long userId){
         var nbTransactions = transactionService.getNbTransactions(userId);
         return new ResponseEntity<>(nbTransactions,HttpStatus.OK);
     }
 
-    @PostMapping("/api/transaction/create")
+    @PostMapping("/create")
     public ResponseEntity<Boolean> createTransaction(@RequestBody TransactionDto transactionDto) {
         var isSaveTransaction = transactionService.createTransaction(transactionDto);
         return new ResponseEntity<>(isSaveTransaction, HttpStatus.OK);
