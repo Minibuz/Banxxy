@@ -27,6 +27,6 @@ public class TransactionController {
     @PostMapping("/create")
     public ResponseEntity<Boolean> createTransaction(@RequestBody TransactionDto transactionDto) {
         var isSaveTransaction = transactionService.createTransaction(transactionDto);
-        return new ResponseEntity<>(isSaveTransaction, HttpStatus.OK);
+        return isSaveTransaction? new ResponseEntity<>(isSaveTransaction, HttpStatus.OK): new ResponseEntity<>(isSaveTransaction,HttpStatus.UNAUTHORIZED);
     }
 }
