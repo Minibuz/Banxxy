@@ -255,4 +255,10 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
         VALUES ('Enfant', 'Enfant', 'Enfant', 'Enfant', '{bcrypt}\$2a\$10\$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK', 'ROLE_CUSTOMER', 'customer');
   INSERT INTO public.customer(id, advisor, parent)
         VALUES (7, 0, 6);
+  INSERT INTO public.transaction(date, amount, author, account_from, account_to)
+  	    VALUES (current_timestamp, 100, 0, 0, 1);
+  INSERT INTO public.transaction(date, amount, author, account_from, account_to)
+    	  VALUES (current_timestamp, 100, 0, 0, 2);
+  INSERT INTO public.transaction(date, amount, author, account_from, account_to)
+    	  VALUES (current_timestamp, 23, 0, 0, 1);
 EOSQL
