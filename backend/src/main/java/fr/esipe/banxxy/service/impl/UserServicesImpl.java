@@ -142,17 +142,39 @@ public class UserServicesImpl implements UserService {
 
     @Override
     public Optional<UserEntity> createAdvisor(UserReceivedDto userReceivedDto) {
-//        UserEntity user = new UserEntity();
-//        user.setFirstname(userReceivedDto.getFirstName());
-//        user.setName(userReceivedDto.getLastName());
-//        user.setUsername(userReceivedDto.getUserName());
-//        user.setPassword(userReceivedDto.getPassword());
-//        user.setMail(userReceivedDto.getMail());
-//        user.setType("advisor");
-//        var userCreated = userRepository.save(user);
-//        AdvisorEntity advisor = new AdvisorEntity();
-//        advisor.s
-        return Optional.empty();
+        UserEntity user = new UserEntity();
+        user.setFirstname(userReceivedDto.getFirstName());
+        user.setName(userReceivedDto.getLastName());
+        user.setUsername(userReceivedDto.getUserName());
+        user.setPassword(userReceivedDto.getPassword());
+        user.setMail(userReceivedDto.getMail());
+        user.setType("advisor");
+        var userCreated = userRepository.save(user);
+        AdvisorEntity advisor = new AdvisorEntity();
+        advisor.setId(userCreated.getId());
+        advisorRepository.save(advisor);
+        return userRepository.findById(userCreated.getId());
+    }
+
+    @Override
+    public Boolean deleteUser(Long userId) {
+        var user = userRepository.findById(userId);
+        if (user.isEmpty())
+            return false;
+        userRepository.delete(user.get());
+        switch (user.get().getType()) {
+            case "advisor" -> {
+                advisorRepository.delete(getAdvisor(userId));
+                return true;
+            }
+            case "customer" -> {
+                customerRepository.delete(getCustomer(userId));
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 
 }

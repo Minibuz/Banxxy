@@ -52,11 +52,20 @@ public class UserController {
         return userService.createCustomer(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
     }
 
+
     @PostMapping(value = "/advisor/create",
             produces = "application/json",
             consumes = "application/json")
     public ResponseEntity<UserEntity> createAdvisor(@RequestBody UserReceivedDto userReceivedDto) {
         return userService.createAdvisor(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Boolean> deleteUser(@RequestBody Long userId) {
+        if(userService.deleteUser(userId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+
     }
 
     /**

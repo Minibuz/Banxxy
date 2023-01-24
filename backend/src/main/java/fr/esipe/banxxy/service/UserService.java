@@ -37,4 +37,6 @@ public interface UserService {
      * @return an Optional containing the user if the creation succeed, otherwise empty
      */
     Optional<UserEntity> createAdvisor(UserReceivedDto userReceivedDto);
+
+    Boolean deleteUser(Long userId);
 }
