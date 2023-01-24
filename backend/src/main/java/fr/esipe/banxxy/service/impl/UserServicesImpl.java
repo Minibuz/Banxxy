@@ -130,7 +130,7 @@ public class UserServicesImpl implements UserService {
         user.setFirstname(userReceivedDto.getFirstName());
         user.setName(userReceivedDto.getLastName());
         user.setUsername(userReceivedDto.getUserName());
-//        user.setPassword(userReceivedDto.getPassword());
+        user.setPassword(userReceivedDto.getPassword());
         user.setPassword("{bcrypt}$2a$10$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK");
         user.setRole(ERole.ROLE_CUSTOMER);
         user.setMail(userReceivedDto.getMail());
@@ -166,14 +166,16 @@ public class UserServicesImpl implements UserService {
         if (user.isEmpty())
             return false;
         userRepository.delete(user.get());
+        if(!userRepository.findById(userId).equals(Optional.empty()))
+            return false;
         switch (user.get().getType()) {
             case "advisor" -> {
                 advisorRepository.delete(getAdvisor(userId));
-                return true;
+                return advisorRepository.findById(userId).equals(Optional.empty());
             }
             case "customer" -> {
                 customerRepository.delete(getCustomer(userId));
-                return true;
+                return customerRepository.findById(userId).equals(Optional.empty());
             }
             default -> {
                 return false;
