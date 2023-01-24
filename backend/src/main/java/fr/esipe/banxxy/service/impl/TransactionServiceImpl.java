@@ -87,7 +87,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Boolean createTransaction(TransactionDto transactionDto) {
-        /*var date = Date.valueOf(transactionDto.getDate());
+        var date = new Date(System.currentTimeMillis());
         var amount = transactionDto.getAmount();
         var account_fromId = transactionDto.getAccount_from();
         var account_toId = transactionDto.getAccount_to();
@@ -97,10 +97,10 @@ public class TransactionServiceImpl implements TransactionService {
         var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
         var accountTo  = accountRepository.findById(account_toId).orElseThrow();
 
-        if (!isCustomer(user)|| !isAdvisor(user))
+        if (!isCustomer(user) && !isAdvisor(user))
             return false;
-
-        if (isCustomer(user) && accountFrom.getCustomer().getId() != user.getId())
+        
+       if (isCustomer(user) && accountFrom.getCustomer().getId() != user.getId())
             return false;
 
         if (isAdvisor(user) &&
@@ -125,7 +125,7 @@ public class TransactionServiceImpl implements TransactionService {
         //save entity in Data Base
         accountRepository.save(accountFrom);
         accountRepository.save(accountTo);
-        transactionRepository.save(transactionEntity);*/
+        transactionRepository.save(transactionEntity);
 
         return true;
 
