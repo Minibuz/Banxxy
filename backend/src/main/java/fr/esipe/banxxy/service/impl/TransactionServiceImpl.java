@@ -87,7 +87,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Boolean createTransaction(TransactionDto transactionDto) {
-        var date = Date.valueOf(transactionDto.getDate());
+        /*var date = Date.valueOf(transactionDto.getDate());
         var amount = transactionDto.getAmount();
         var account_fromId = transactionDto.getAccount_from();
         var account_toId = transactionDto.getAccount_to();
@@ -125,7 +125,7 @@ public class TransactionServiceImpl implements TransactionService {
         //save entity in Data Base
         accountRepository.save(accountFrom);
         accountRepository.save(accountTo);
-        transactionRepository.save(transactionEntity);
+        transactionRepository.save(transactionEntity);*/
 
         return true;
 
