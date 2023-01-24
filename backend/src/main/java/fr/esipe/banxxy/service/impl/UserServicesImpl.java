@@ -129,7 +129,7 @@ public class UserServicesImpl implements UserService {
         user.setFirstname(userReceivedDto.getFirstName());
         user.setName(userReceivedDto.getLastName());
         user.setUsername(userReceivedDto.getUserName());
-        user.setPassword(userReceivedDto.getPassword());
+//        user.setPassword(userReceivedDto.getPassword());
         user.setMail(userReceivedDto.getMail());
         user.setType("customer");
         var userCreated = userRepository.save(user);
