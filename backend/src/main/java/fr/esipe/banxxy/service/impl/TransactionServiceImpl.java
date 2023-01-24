@@ -86,7 +86,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Boolean saveTransaction(TransactionDto transactionDto) {
+    public Boolean createTransaction(TransactionDto transactionDto) {
         var date = Date.valueOf(transactionDto.getDate());
         var amount = transactionDto.getAmount();
         var account_fromId = transactionDto.getAccount_from();

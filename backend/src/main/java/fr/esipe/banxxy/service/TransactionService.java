@@ -10,5 +10,5 @@ public interface TransactionService {
 
     Integer getNbTransactions(Long userId);
 
-    Boolean saveTransaction(TransactionDto transactionDto);
+    Boolean createTransaction(TransactionDto transactionDto);
 }

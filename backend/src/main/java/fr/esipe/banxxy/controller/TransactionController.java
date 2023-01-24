@@ -34,8 +34,8 @@ public class TransactionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> saveTransaction(@RequestBody TransactionDto transactionDto) {
-        var isSaveTransaction = transactionService.saveTransaction(transactionDto);
+    public ResponseEntity<Boolean> createTransaction(@RequestBody TransactionDto transactionDto) {
+        var isSaveTransaction = transactionService.createTransaction(transactionDto);
         return new ResponseEntity<>(isSaveTransaction, HttpStatus.OK);
     }
 }
