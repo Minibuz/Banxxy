@@ -2,6 +2,7 @@ package fr.esipe.banxxy.service.impl;
 
 import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
+import fr.esipe.banxxy.dao.ERole;
 import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.user.UserDetailDto;
 import fr.esipe.banxxy.dto.user.UserDto;
@@ -130,6 +131,8 @@ public class UserServicesImpl implements UserService {
         user.setName(userReceivedDto.getLastName());
         user.setUsername(userReceivedDto.getUserName());
 //        user.setPassword(userReceivedDto.getPassword());
+        user.setPassword("{bcrypt}$2a$10$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK");
+        user.setRole(ERole.ROLE_CUSTOMER);
         user.setMail(userReceivedDto.getMail());
         user.setType("customer");
         var userCreated = userRepository.save(user);
@@ -147,6 +150,7 @@ public class UserServicesImpl implements UserService {
         user.setName(userReceivedDto.getLastName());
         user.setUsername(userReceivedDto.getUserName());
         user.setPassword(userReceivedDto.getPassword());
+        user.setRole(ERole.ROLE_ADVISOR);
         user.setMail(userReceivedDto.getMail());
         user.setType("advisor");
         var userCreated = userRepository.save(user);
