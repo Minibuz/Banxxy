@@ -2,8 +2,6 @@ package fr.esipe.banxxy.service.impl;
 
 import fr.esipe.banxxy.dto.transaction.TransactionDto;
 import fr.esipe.banxxy.repository.AccountRepository;
-import fr.esipe.banxxy.repository.AdvisorRepository;
-import fr.esipe.banxxy.repository.TransactionRepository;
 import fr.esipe.banxxy.repository.UserRepository;
 import fr.esipe.banxxy.service.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
