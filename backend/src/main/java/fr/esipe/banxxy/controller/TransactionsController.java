@@ -24,6 +24,8 @@ public class TransactionsController {
     public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
                                                               @PathVariable Long userId) {
         var transactions = transactionsService.getTransactionList(accountId, userId);
+        if (transactions.isEmpty())
+            return new ResponseEntity<>(transactions,HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 

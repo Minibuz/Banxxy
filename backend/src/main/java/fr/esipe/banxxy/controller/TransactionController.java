@@ -21,6 +21,8 @@ public class TransactionController {
     @GetMapping("/{userId}")
     public ResponseEntity<Integer> getNbTransaction(@PathVariable Long userId){
         var nbTransactions = transactionService.getNbTransactions(userId);
+        if (nbTransactions == 0)
+            return new ResponseEntity<>(nbTransactions,HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(nbTransactions,HttpStatus.OK);
     }
 
