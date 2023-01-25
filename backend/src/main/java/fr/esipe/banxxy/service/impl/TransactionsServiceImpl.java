@@ -1,8 +1,5 @@
 package fr.esipe.banxxy.service.impl;
 
-import fr.esipe.banxxy.dao.AdvisorEntity;
-import fr.esipe.banxxy.dao.CustomerEntity;
-import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.transaction.TransactionDto;
 import fr.esipe.banxxy.repository.AccountRepository;
 import fr.esipe.banxxy.repository.AdvisorRepository;
@@ -16,25 +13,13 @@ import java.util.List;
 
 public class TransactionsServiceImpl  implements TransactionsService {
     private final UserRepository userRepository;
-    private final AdvisorRepository advisorRepository;
     private final AccountRepository accountRepository;
-    private  final TransactionRepository transactionRepository;
 
     @Autowired
     public TransactionsServiceImpl(UserRepository userRepository,
-                                  AdvisorRepository advisorRepository,
-                                  AccountRepository accountRepository,
-                                  TransactionRepository transactionRepository) {
+                                  AccountRepository accountRepository) {
         this.userRepository = userRepository;
-        this.advisorRepository = advisorRepository;
         this.accountRepository = accountRepository;
-        this.transactionRepository = transactionRepository;
-    }
-   /* private boolean isAdvisor(UserEntity user) {
-        return user instanceof AdvisorEntity;
-    }*/
-    private boolean isCustomer(UserEntity user) {
-        return user instanceof CustomerEntity;
     }
     @Override
     public List<TransactionDto> getTransactionList(Long accountId, Long userId) {
