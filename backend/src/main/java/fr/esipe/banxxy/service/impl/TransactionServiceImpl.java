@@ -43,26 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
         return user instanceof CustomerEntity;
     }
 
-    @Override
-    public List<TransactionDto> getTransactionList(Long accountId, Long userId) {
-        var user = userRepository.findById(userId).orElseThrow();
-        var account = accountRepository.findById(accountId).orElseThrow();
-        var transactions = user.getTransactions().stream().filter(transaction -> transaction.getAccountFrom().equals(account) || transaction.getAccountTo().equals(account)).toList();
 
-       var transactionDtoList = new ArrayList<TransactionDto>();
-       transactions.forEach(transaction ->{
-           var transactionDto = new TransactionDto(
-                   transaction.getAmount(),
-                   transaction.getAuthor().getName(),
-                   transaction.getAuthor().getId(),
-                   transaction.getAccountFrom().getId(),
-                   transaction.getAccountTo().getId(),
-                   transaction.getDate().toString());
-           transactionDtoList.add(transactionDto);
-
-       });
-       return transactionDtoList;
-    }
 
     @Override
     public Integer getNbTransactions(Long userId) {
