@@ -5,10 +5,12 @@ import fr.esipe.banxxy.repository.AccountRepository;
 import fr.esipe.banxxy.repository.UserRepository;
 import fr.esipe.banxxy.service.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class TransactionsServiceImpl  implements TransactionsService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
