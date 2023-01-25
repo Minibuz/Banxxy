@@ -4,8 +4,11 @@ import fr.esipe.banxxy.dto.jms.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.time.ZonedDateTime;
 
 @org.springframework.stereotype.Controller
 public class RedirectionController implements ErrorController {
@@ -24,8 +27,9 @@ public class RedirectionController implements ErrorController {
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @RequestMapping(value = "/api/jms", method = RequestMethod.GET)
-    public void test() {
-        jmsTemplate.convertAndSend("mailbox", new Log("Hello"));
+    @RequestMapping(value = "/api/jms/{authorId}/{accountId}", method = RequestMethod.GET)
+    public void jmsSender(@PathVariable Long accountId,
+                          @PathVariable Long authorId) {
+        jmsTemplate.convertAndSend("mailbox", new Log(ZonedDateTime.now(), accountId, authorId));
     }
 }
