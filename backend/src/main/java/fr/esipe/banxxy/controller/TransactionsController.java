@@ -2,6 +2,7 @@ package fr.esipe.banxxy.controller;
 
 import fr.esipe.banxxy.dto.transaction.TransactionDto;
 import fr.esipe.banxxy.service.TransactionService;
+import fr.esipe.banxxy.service.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +14,17 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 public class TransactionsController {
 
-    private final TransactionService transactionService;
+    private final TransactionsService transactionsService;
 
     @Autowired
-    public TransactionsController(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    public TransactionsController(TransactionsService transactionsService) {
+        this.transactionsService = transactionsService;
     }
 
     @GetMapping("/{accountId}/{userId}")
     public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
                                                               @PathVariable Long userId) {
-        var transactions = transactionService.getTransactionList(accountId, userId);
+        var transactions = transactionsService.getTransactionList(accountId, userId);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 

@@ -30,9 +30,9 @@ public class TransactionsServiceImpl  implements TransactionsService {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
     }
-    private boolean isAdvisor(UserEntity user) {
+   /* private boolean isAdvisor(UserEntity user) {
         return user instanceof AdvisorEntity;
-    }
+    }*/
     private boolean isCustomer(UserEntity user) {
         return user instanceof CustomerEntity;
     }
