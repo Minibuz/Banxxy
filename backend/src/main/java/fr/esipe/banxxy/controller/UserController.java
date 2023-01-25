@@ -1,6 +1,5 @@
 package fr.esipe.banxxy.controller;
 
-import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.user.UserDetailDto;
 import fr.esipe.banxxy.dto.user.UserDto;
 import fr.esipe.banxxy.dto.user.UserReceivedDto;
@@ -48,16 +47,16 @@ public class UserController {
     @PostMapping(value = "/customer/create",
             produces = "application/json",
             consumes = "application/json")
-    public ResponseEntity<UserEntity> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
-        return userService.createCustomer(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+    public ResponseEntity<Boolean> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
+        return userService.createCustomer(userReceivedDto).map(userEntity -> new ResponseEntity<>(true, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED));
     }
 
 
     @PostMapping(value = "/advisor/create",
             produces = "application/json",
             consumes = "application/json")
-    public ResponseEntity<UserEntity> createAdvisor(@RequestBody UserReceivedDto userReceivedDto) {
-        return userService.createAdvisor(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+    public ResponseEntity<Boolean> createAdvisor(@RequestBody UserReceivedDto userReceivedDto) {
+        return userService.createAdvisor(userReceivedDto).map(userEntity -> new ResponseEntity<>(true, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED));
     }
 
     @DeleteMapping("/delete/{userId}")

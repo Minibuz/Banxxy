@@ -2,7 +2,6 @@ package fr.esipe.banxxy.service.impl;
 
 import fr.esipe.banxxy.dao.AdvisorEntity;
 import fr.esipe.banxxy.dao.CustomerEntity;
-import fr.esipe.banxxy.dao.ERole;
 import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.user.UserDetailDto;
 import fr.esipe.banxxy.dto.user.UserDto;
@@ -126,38 +125,33 @@ public class UserServicesImpl implements UserService {
 
     @Override
     public Optional<UserEntity> createCustomer(UserReceivedDto userReceivedDto) {
-        UserEntity user = new UserEntity();
-        user.setFirstname(userReceivedDto.getFirstName());
-        user.setName(userReceivedDto.getLastName());
-        user.setUsername(userReceivedDto.getUserName());
-        user.setPassword(userReceivedDto.getPassword());
-        user.setPassword("{bcrypt}$2a$10$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK");
-        user.setRole(ERole.ROLE_CUSTOMER);
-        user.setMail(userReceivedDto.getMail());
-        user.setType("customer");
-        var userCreated = userRepository.save(user);
         CustomerEntity customer = new CustomerEntity();
-        customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
-        customer.setId(userCreated.getId());
-        customerRepository.save(customer);
-        return userRepository.findById(userCreated.getId());
+        customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorIdAsLong()));
+        customer.setFirstname(userReceivedDto.getFirstName());
+        customer.setName(userReceivedDto.getLastName());
+        customer.setUsername(userReceivedDto.getUserName());
+        //customer.setPassword(userReceivedDto.getPassword());
+        customer.setPassword("{bcrypt}$2a$10$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK");
+        customer.setRole("ROLE_CUSTOMER");
+        customer.setMail(userReceivedDto.getMail());
+        customer.setType("customer");
+        customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorIdAsLong()));
+        customer = customerRepository.save(customer);
+        return userRepository.findById(customer.getId());
     }
 
     @Override
     public Optional<UserEntity> createAdvisor(UserReceivedDto userReceivedDto) {
-        UserEntity user = new UserEntity();
-        user.setFirstname(userReceivedDto.getFirstName());
-        user.setName(userReceivedDto.getLastName());
-        user.setUsername(userReceivedDto.getUserName());
-        user.setPassword(userReceivedDto.getPassword());
-        user.setRole(ERole.ROLE_ADVISOR);
-        user.setMail(userReceivedDto.getMail());
-        user.setType("advisor");
-        var userCreated = userRepository.save(user);
         AdvisorEntity advisor = new AdvisorEntity();
-        advisor.setId(userCreated.getId());
-        advisorRepository.save(advisor);
-        return userRepository.findById(userCreated.getId());
+        advisor.setFirstname(userReceivedDto.getFirstName());
+        advisor.setName(userReceivedDto.getLastName());
+        advisor.setUsername(userReceivedDto.getUserName());
+        advisor.setPassword(userReceivedDto.getPassword());
+        advisor.setRole("ROLE_ADVISOR");
+        advisor.setMail(userReceivedDto.getMail());
+        advisor.setType("advisor");
+        advisor = advisorRepository.save(advisor);
+        return userRepository.findById(advisor.getId());
     }
 
     @Override
