@@ -24,12 +24,14 @@ public class UserServicesImpl implements UserService {
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+    private final EmailSenderServiceImpl emailSenderService;
 
     @Autowired
-    public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository) {
+    public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository, EmailSenderServiceImpl emailSenderService) {
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
+        this.emailSenderService = emailSenderService;
     }
 
     /**
@@ -130,13 +132,13 @@ public class UserServicesImpl implements UserService {
         customer.setFirstname(userReceivedDto.getFirstName());
         customer.setName(userReceivedDto.getLastName());
         customer.setUsername(userReceivedDto.getUserName());
-        //customer.setPassword(userReceivedDto.getPassword());
-        customer.setPassword("{bcrypt}$2a$10$VCIeTiINf5oL9grYi/cnN.W7xssZjHgzDBK7F8oD14ndZUVifhjTK");
+        customer.setPassword(userReceivedDto.getPassword());
         customer.setRole("ROLE_CUSTOMER");
         customer.setMail(userReceivedDto.getMail());
         customer.setType("customer");
         customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorIdAsLong()));
         customer = customerRepository.save(customer);
+        emailSenderService.onCreateUser(null); /*null car par défaut on envoie à nous meme*/
         return userRepository.findById(customer.getId());
     }
 
@@ -151,6 +153,7 @@ public class UserServicesImpl implements UserService {
         advisor.setMail(userReceivedDto.getMail());
         advisor.setType("advisor");
         advisor = advisorRepository.save(advisor);
+        emailSenderService.onCreateUser(null); /*null car par défaut on envoie à nous meme*/
         return userRepository.findById(advisor.getId());
     }
 
@@ -165,10 +168,12 @@ public class UserServicesImpl implements UserService {
         switch (user.get().getType()) {
             case "advisor" -> {
                 advisorRepository.delete(getAdvisor(userId));
+                emailSenderService.onDeleteUser(null);
                 return advisorRepository.findById(userId).equals(Optional.empty());
             }
             case "customer" -> {
                 customerRepository.delete(getCustomer(userId));
+                emailSenderService.onDeleteUser(null);
                 return customerRepository.findById(userId).equals(Optional.empty());
             }
             default -> {
