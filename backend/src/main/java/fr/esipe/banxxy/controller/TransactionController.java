@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/transaction")
 public class TransactionController {
@@ -20,22 +18,19 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/{accountId}/{userId}")
-    public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable Long accountId,
-                                                              @PathVariable Long userId) {
-        var transactions = transactionService.getTransactionList(accountId, userId);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
-    }
-
     @GetMapping("/{userId}")
     public ResponseEntity<Integer> getNbTransaction(@PathVariable Long userId){
         var nbTransactions = transactionService.getNbTransactions(userId);
+        if (nbTransactions == 0)
+            return new ResponseEntity<>(nbTransactions,HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(nbTransactions,HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> saveTransaction(@RequestBody TransactionDto transactionDto) {
-        var isSaveTransaction = transactionService.saveTransaction(transactionDto);
-        return new ResponseEntity<>(isSaveTransaction, HttpStatus.OK);
+    public ResponseEntity<Boolean> createTransaction(@RequestBody TransactionDto transactionDto) {
+        var isSaveTransaction = transactionService.createTransaction(transactionDto);
+        if (isSaveTransaction != null && isSaveTransaction)
+            return new ResponseEntity<>(isSaveTransaction, HttpStatus.OK);
+        return new ResponseEntity<>(isSaveTransaction,HttpStatus.UNAUTHORIZED);
     }
 }

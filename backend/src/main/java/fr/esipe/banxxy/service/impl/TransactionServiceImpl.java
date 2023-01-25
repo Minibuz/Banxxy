@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.math.BigInteger;
-
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -43,26 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
         return user instanceof CustomerEntity;
     }
 
-    @Override
-    public List<TransactionDto> getTransactionList(Long accountId, Long userId) {
-        var user = userRepository.findById(userId).orElseThrow();
-        var account = accountRepository.findById(accountId).orElseThrow();
-        var transactions = user.getTransactions().stream().filter(transaction -> transaction.getAccountFrom().equals(account) || transaction.getAccountTo().equals(account)).toList();
 
-       var transactionDtoList = new ArrayList<TransactionDto>();
-       transactions.forEach(transaction ->{
-           var transactionDto = new TransactionDto(
-                   transaction.getAmount(),
-                   transaction.getAuthor().getName(),
-                   transaction.getAuthor().getId(),
-                   transaction.getAccountFrom().getId(),
-                   transaction.getAccountTo().getId(),
-                   transaction.getDate().toString());
-           transactionDtoList.add(transactionDto);
-
-       });
-       return transactionDtoList;
-    }
 
     @Override
     public Integer getNbTransactions(Long userId) {
@@ -86,8 +64,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Boolean saveTransaction(TransactionDto transactionDto) {
-        var date = Date.valueOf(transactionDto.getDate());
+    public Boolean createTransaction(TransactionDto transactionDto) {
+        var date = new Date(System.currentTimeMillis());
         var amount = transactionDto.getAmount();
         var account_fromId = transactionDto.getAccount_from();
         var account_toId = transactionDto.getAccount_to();
@@ -97,10 +75,10 @@ public class TransactionServiceImpl implements TransactionService {
         var accountFrom = accountRepository.findById(account_fromId).orElseThrow();
         var accountTo  = accountRepository.findById(account_toId).orElseThrow();
 
-        if (!isCustomer(user)|| !isAdvisor(user))
+        if (!isCustomer(user) && !isAdvisor(user))
             return false;
-
-        if (isCustomer(user) && accountFrom.getCustomer().getId() != user.getId())
+        
+       if (isCustomer(user) && accountFrom.getCustomer().getId() != user.getId())
             return false;
 
         if (isAdvisor(user) &&
