@@ -48,14 +48,6 @@ public class AccountsServicesImpl implements AccountsService {
         else return Set.of();
     }
 
-    @Override
-    public List<AccountDetailedDto> getAccounts(Integer userId) {
-        var opt = userRepository.findById(Long.valueOf(userId));
-        if (opt.isEmpty() || isAdvisor(opt.get()))
-            return List.of();
-        return getAllAccounts(userId);
-    }
-
     private void addCustomerAccountsToList(CustomerEntity customer, List<AccountDetailedDto> accountsList) {
         customer.getAccounts().forEach(account ->
                 accountsList.add(new AccountDetailedDto(
@@ -86,16 +78,7 @@ public class AccountsServicesImpl implements AccountsService {
         ));
     }
 
-    @Override
-    public List<AccountDetailedDto> getAttachedAccounts(Integer userId) {
-        var opt = userRepository.findById(Long.valueOf(userId));
-        if (opt.isEmpty() || isCustomer(opt.get()))
-            return List.of();
-        return getAllAccounts(userId);
-    }
-
-    @Override
-    public List<AccountDetailedDto> getAllAccounts(Integer userId) {
+    private List<AccountDetailedDto> getAllAccounts(Integer userId) {
         var opt = userRepository.findById(Long.valueOf(userId));
         if (opt.isEmpty())
             return List.of();
@@ -111,5 +94,21 @@ public class AccountsServicesImpl implements AccountsService {
             }
         });
         return accountsList;
+    }
+
+    @Override
+    public List<AccountDetailedDto> getAttachedAccounts(Integer userId) {
+        var opt = userRepository.findById(Long.valueOf(userId));
+        if (opt.isEmpty() || isCustomer(opt.get()))
+            return List.of();
+        return getAllAccounts(userId);
+    }
+
+    @Override
+    public List<AccountDetailedDto> getAccounts(Integer userId) {
+        var opt = userRepository.findById(Long.valueOf(userId));
+        if (opt.isEmpty() || isAdvisor(opt.get()))
+            return List.of();
+        return getAllAccounts(userId);
     }
 }
