@@ -29,7 +29,7 @@ public class UserServicesImpl implements UserService {
     private final UserRepository userRepository;
     private final EmailSenderService emailSenderService;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Autowired
     public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository, EmailSenderServiceImpl emailSenderService) {
@@ -37,7 +37,6 @@ public class UserServicesImpl implements UserService {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
         this.emailSenderService = emailSenderService;
-        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     /**
