@@ -45,6 +45,12 @@ import {useToast} from "vue-toastification";
 
 export default {
   name: "ChequeRequest",
+  props: {
+    compte: {
+      type: Object,
+      default: () => ({id: null, title: "", owner: "",advisor: "",solde:0})
+    }
+  },
 
   setup(){
     const toast = useToast();
@@ -61,15 +67,22 @@ export default {
     async handleChequier() {
 
       //await CreateCustomer.create(myCustomer)
-      const API_URL = '/api/jms';
-
-        await fetch(`${API_URL}`, {
+      const API_URL = '/api/jms/';
+      const auth = this.$store.state.auth.user.id;
+      const id = this.compte.id;
+      try {
+        const request = await fetch(`${API_URL}${auth}/${id}`, {
           method: 'GET',
           headers: authHeader(),
         });
-        this.toast.success("Demande envoyée");
-        this.dialogChequeRequest = false;
+        if(request.ok) {
+          this.toast.success("Demande envoyée");
+          this.dialogChequeRequest = false;
         }
+      }catch(error){
+        this.toast.error(error.message);
+      }
+    }
   }
 }
 </script>

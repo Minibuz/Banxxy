@@ -1,6 +1,5 @@
 package fr.esipe.banxxy.controller;
 
-import fr.esipe.banxxy.dao.UserEntity;
 import fr.esipe.banxxy.dto.user.UserDetailDto;
 import fr.esipe.banxxy.dto.user.UserDto;
 import fr.esipe.banxxy.dto.user.UserReceivedDto;
@@ -45,12 +44,27 @@ public class UserController {
      * @param userReceivedDto an object containing datas to create the user
      * @return The user created and OK if the creation worked, otherwise null and UNAUTHORIZED
      */
-    @RequestMapping(value = "/customer/create",
+    @PostMapping(value = "/customer/create",
             produces = "application/json",
-            consumes = "application/json",
-            method = RequestMethod.POST)
-    public ResponseEntity<UserEntity> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
-        return userService.createUser(userReceivedDto).map(userEntity -> new ResponseEntity<>(userEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED));
+            consumes = "application/json")
+    public ResponseEntity<Boolean> createCustomer(@RequestBody UserReceivedDto userReceivedDto) {
+        return userService.createCustomer(userReceivedDto).map(userEntity -> new ResponseEntity<>(true, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED));
+    }
+
+
+    @PostMapping(value = "/advisor/create",
+            produces = "application/json",
+            consumes = "application/json")
+    public ResponseEntity<Boolean> createAdvisor(@RequestBody UserReceivedDto userReceivedDto) {
+        return userService.createAdvisor(userReceivedDto).map(userEntity -> new ResponseEntity<>(true, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED));
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Boolean> deleteUser(@RequestBody Long userId) {
+        if(userService.deleteUser(userId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+
     }
 
     /**

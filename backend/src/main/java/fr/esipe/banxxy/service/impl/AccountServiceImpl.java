@@ -11,6 +11,7 @@ import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
 import fr.esipe.banxxy.service.AccountService;
+import fr.esipe.banxxy.service.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +28,19 @@ public class AccountServiceImpl implements AccountService {
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
     public AccountServiceImpl(UserRepository userRepository,
                               AdvisorRepository advisorRepository,
                               CustomerRepository customerRepository,
-                              AccountRepository accountRepository) {
+                              AccountRepository accountRepository,
+                              EmailSenderServiceImpl emailSenderService) {
         this.userRepository = userRepository;
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
+        this.emailSenderService = emailSenderService;
     }
 
     private boolean isAdvisor(UserEntity user) {
@@ -91,29 +95,35 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean deleteAccount(Integer userId, Integer accountId) {
-        var opt = userRepository.findById(Long.valueOf(userId));
+        var longId = Long.valueOf(userId);
+        var opt = userRepository.findById(longId);
         if (opt.isEmpty())
             return false;
         UserEntity user = opt.get();
         if (isAdvisor(user)) {
-            AdvisorEntity advisor = advisorRepository.findById(Long.valueOf(userId)).orElse(null);
+            AdvisorEntity advisor = advisorRepository.findById(longId).orElse(null);
             if (advisor == null)
                 return false;
             Set<CustomerEntity> customers = advisor.getCustomers();
             for (CustomerEntity customer : customers) {
                 if (customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId)))) {
                     accountRepository.deleteById(Long.valueOf(accountId));
-                    if(!accountRepository.existsById(Long.valueOf(accountId)))
+                    if(!accountRepository.existsById(Long.valueOf(accountId))) {
+                        emailSenderService.onDeleteAccount(null);
                         return true;
+                    }
                 }
             }
         } else if (isCustomer(user)) {
-            CustomerEntity customer = customerRepository.findById(Long.valueOf(userId)).orElse(null);
+            CustomerEntity customer = customerRepository.findById(longId).orElse(null);
             if (customer == null)
                 return false;
             if(customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId)))) {
                 accountRepository.deleteById(Long.valueOf(accountId));
-                return !accountRepository.existsById(Long.valueOf(accountId));
+                if(!accountRepository.existsById(Long.valueOf(accountId))) {
+                    emailSenderService.onDeleteAccount(null);
+                    return true;
+                }
             }
         }
         return false;
@@ -134,6 +144,7 @@ public class AccountServiceImpl implements AccountService {
         AdvisorEntity advisor = advisorRepository.findByCustomersContaining(customer);
         String advisorFirstName = advisor.getFirstname();
         String advisorLastName = advisor.getName();
+        emailSenderService.onCreateAccount(null);
         return Optional.of(new AccountDetailedDto(
                 account.getId(),
                 accountDto.getTitle(),

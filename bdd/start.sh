@@ -83,14 +83,6 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
   ALTER TABLE public.transaction OWNER TO postgres;
 
-
-  --
-  -- Name: roles; Type: ENUM; Schema: public; Owner: postgres
-  --
-
-  CREATE TYPE public.role AS ENUM ('ROLE_CUSTOMER', 'ROLE_ADVISOR');
-
-
   --
   -- Name: user; Type: TABLE; Schema: public; Owner: postgres
   --
@@ -102,7 +94,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
       firstname character varying(20) NOT NULL,
       mail character varying(40) NOT NULL,
       password character varying(255) NOT NULL,
-      role public.role NOT NULL,
+      role character varying(20) NOT NULL,
       type character varying(10) NOT NULL
   );
 

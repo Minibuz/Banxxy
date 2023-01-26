@@ -9,6 +9,7 @@ import fr.esipe.banxxy.dto.user.UserReceivedDto;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
+import fr.esipe.banxxy.service.EmailSenderService;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,14 @@ public class UserServicesImpl implements UserService {
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
-    public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository) {
+    public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository, EmailSenderServiceImpl emailSenderService) {
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
+        this.emailSenderService = emailSenderService;
     }
 
     /**
@@ -124,20 +127,60 @@ public class UserServicesImpl implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> createUser(UserReceivedDto userReceivedDto) {
-        UserEntity user = new UserEntity();
-        user.setFirstname(userReceivedDto.getFirstName());
-        user.setName(userReceivedDto.getLastName());
-        user.setUsername(userReceivedDto.getUserName());
-        user.setPassword(userReceivedDto.getPassword());
-        user.setMail(userReceivedDto.getMail());
-        user.setType("customer");
-        var userCreated = userRepository.save(user);
+    public Optional<UserEntity> createCustomer(UserReceivedDto userReceivedDto) {
         CustomerEntity customer = new CustomerEntity();
-        customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorId()));
-        customerRepository.save(customer);
-        return userRepository.findById(userCreated.getId());
+        customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorIdAsLong()));
+        customer.setFirstname(userReceivedDto.getFirstName());
+        customer.setName(userReceivedDto.getLastName());
+        customer.setUsername(userReceivedDto.getUserName());
+        customer.setPassword(userReceivedDto.getPassword());
+        customer.setRole("ROLE_CUSTOMER");
+        customer.setMail(userReceivedDto.getMail());
+        customer.setType("customer");
+        customer.setAdvisor(getAdvisor(userReceivedDto.getAdvisorIdAsLong()));
+        customer = customerRepository.save(customer);
+        emailSenderService.onCreateUser(null); /*null car par défaut on envoie à nous meme*/
+        return userRepository.findById(customer.getId());
+    }
 
+    @Override
+    public Optional<UserEntity> createAdvisor(UserReceivedDto userReceivedDto) {
+        AdvisorEntity advisor = new AdvisorEntity();
+        advisor.setFirstname(userReceivedDto.getFirstName());
+        advisor.setName(userReceivedDto.getLastName());
+        advisor.setUsername(userReceivedDto.getUserName());
+        advisor.setPassword(userReceivedDto.getPassword());
+        advisor.setRole("ROLE_ADVISOR");
+        advisor.setMail(userReceivedDto.getMail());
+        advisor.setType("advisor");
+        advisor = advisorRepository.save(advisor);
+        emailSenderService.onCreateUser(null); /*null car par défaut on envoie à nous meme*/
+        return userRepository.findById(advisor.getId());
+    }
+
+    @Override
+    public Boolean deleteUser(Long userId) {
+        var user = userRepository.findById(userId);
+        if (user.isEmpty())
+            return false;
+        userRepository.delete(user.get());
+        if(!userRepository.findById(userId).equals(Optional.empty()))
+            return false;
+        switch (user.get().getType()) {
+            case "advisor" -> {
+                advisorRepository.delete(getAdvisor(userId));
+                emailSenderService.onDeleteUser(null);
+                return advisorRepository.findById(userId).equals(Optional.empty());
+            }
+            case "customer" -> {
+                customerRepository.delete(getCustomer(userId));
+                emailSenderService.onDeleteUser(null);
+                return customerRepository.findById(userId).equals(Optional.empty());
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 
 }

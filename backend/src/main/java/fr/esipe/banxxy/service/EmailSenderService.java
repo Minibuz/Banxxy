@@ -13,4 +13,10 @@ public interface EmailSenderService {
      * @param toEmail The email address of the receiver. (String)
      */
     void onCreateAccount(String toEmail);
+
+    void onDeleteAccount(String toEmail);
+
+    void onCreateUser(String toEmail);
+
+    void onDeleteUser(String toEmail);
 }

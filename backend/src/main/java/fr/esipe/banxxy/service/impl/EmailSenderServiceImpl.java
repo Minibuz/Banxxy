@@ -29,7 +29,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         SimpleMailMessage message = new SimpleMailMessage();
         String sender = "banxxy.esipe@gmail.com";
         message.setFrom(sender);
-        message.setTo(toEmail);
+        message.setTo(sender);
         message.setText(body);
         message.setSubject(subject);
         return message;
@@ -52,10 +52,43 @@ Si vous êtes à l'origine de cette demande, veuillez cliquer sur le lien suivan
     public void onCreateAccount(String toEmail) {
         mailSender.send(createEmail(toEmail,
                 "Validation de création de votre compte Banxxy",
-"""
-Félicitations, vous venez de créer votre compte Banxxy.
-Pour vous connecter, veuillez vous rendre à l'adresse suivante : --------------------
-Votre conseiller Banxxy.
-"""));
+                """
+                Félicitations, vous venez de créer votre compte associé à votre dossier.
+                Je suis votre conseiller Banxxy.
+                N'hésitez pas à me contacter par téléphone ou par mail.
+                """));
+    }
+
+    @Override
+    public void onDeleteAccount(String toEmail) {
+        mailSender.send(createEmail(toEmail,
+                "Confirmation de suppression de compte Banxxy",
+                """
+                Nous vous confirmons que vous venez de supprimer votre compte associé à votre dossier.
+                Je suis votre conseiller Banxxy.
+                N'hésitez pas à me contacter par téléphone ou par mail.
+                """));
+    }
+
+    @Override
+    public void onCreateUser(String toEmail) {
+        mailSender.send(createEmail(toEmail,
+                "Validation de création de votre dossier Banxxy",
+                """
+                Félicitations, vous venez de créer votre dossier Banxxy.
+                Pour vous connecter, veuillez vous rendre à l'adresse suivante : --------------------
+                Votre conseiller Banxxy.
+                """));
+    }
+
+    @Override
+    public void onDeleteUser(String toEmail) {
+        mailSender.send(createEmail(toEmail,
+                "Suppression de dossier Banxxy",
+                """
+                Vous venez de supprimer votre dossier au sein de notre bank.
+                Nous en sommes désolé et espérons vous revoir bientôt.
+                Votre conseiller Banxxy.
+                """));
     }
 }

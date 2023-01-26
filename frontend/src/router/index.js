@@ -38,18 +38,33 @@ const router = createRouter({
 })
 
 router.beforeEach((to,from,next)=>{
-    //let now = Date.now();
-    //let default_time_out=600;
+
     const loggedIn = localStorage.getItem('user');
-    if(to.meta.requiresAuth && !loggedIn){
+    const isLogged = loggedIn !==null;
+    if(!to.meta.requiresAuth){
+        next();
+        //nedd to be logged
+    } else if(!isLogged){
+        next({name: "login"});
+    //token expire
+    }else if(parseJwt(JSON.parse(loggedIn).accessToken).exp< Date.now()/1000) {
+        localStorage.removeItem('user');
         next({name: "login"})
-    }else if(to.name ==="login" && loggedIn){
-        next({name: from.name})
+    } else if(to.name ==="login"){
+            next({name: from.name})
     }else{
         next()
     }
-    //TODO gestion du timeOUT
-
 })
 
 export default router;
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
