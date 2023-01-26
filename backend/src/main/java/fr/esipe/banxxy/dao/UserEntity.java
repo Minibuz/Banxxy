@@ -5,8 +5,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "user", schema = "public", catalog = "compte")
-@DiscriminatorValue(value = "none")
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +34,7 @@ public class UserEntity {
     private List<TransactionEntity> transactions;
 
     @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ERole role;
+    private String role;
 
     public Long getId() {
         return id;
@@ -103,11 +100,11 @@ public class UserEntity {
         this.transactions = transactions;
     }
 
-    public ERole getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(ERole role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }

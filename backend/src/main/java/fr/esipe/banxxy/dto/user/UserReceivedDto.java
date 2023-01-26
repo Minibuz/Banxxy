@@ -5,6 +5,7 @@ public class UserReceivedDto {
     private String lastName;
     private String mail;
     private String userName;
+
     private String password;
     private String advisorId;
 
@@ -59,8 +60,12 @@ public class UserReceivedDto {
         this.password = password;
     }
 
-    public Long getAdvisorId() {
-        return Long.getLong(advisorId);
+    public Long getAdvisorIdAsLong() {
+        return Long.parseLong(advisorId);
+    }
+
+    public String getAdvisorId() {
+        return advisorId;
     }
 
     public void setAdvisorId(String advisorId) {

@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "customer")
-@DiscriminatorValue(value = "customer")
+@PrimaryKeyJoinColumn(name = "id")
 public class CustomerEntity extends UserEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "advisor")

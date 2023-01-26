@@ -5,7 +5,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "advisor")
-@DiscriminatorValue(value = "advisor")
+@PrimaryKeyJoinColumn(name = "id")
 public class AdvisorEntity extends UserEntity {
 
     @OneToMany(mappedBy = "advisor", fetch = FetchType.EAGER)
