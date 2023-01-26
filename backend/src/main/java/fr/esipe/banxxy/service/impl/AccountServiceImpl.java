@@ -11,6 +11,7 @@ import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
 import fr.esipe.banxxy.service.AccountService;
+import fr.esipe.banxxy.service.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class AccountServiceImpl implements AccountService {
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
-    private final EmailSenderServiceImpl emailSenderService;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
     public AccountServiceImpl(UserRepository userRepository,

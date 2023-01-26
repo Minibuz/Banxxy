@@ -9,6 +9,7 @@ import fr.esipe.banxxy.dto.user.UserReceivedDto;
 import fr.esipe.banxxy.repository.AdvisorRepository;
 import fr.esipe.banxxy.repository.CustomerRepository;
 import fr.esipe.banxxy.repository.UserRepository;
+import fr.esipe.banxxy.service.EmailSenderService;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class UserServicesImpl implements UserService {
     private final AdvisorRepository advisorRepository;
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
-    private final EmailSenderServiceImpl emailSenderService;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
     public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository, EmailSenderServiceImpl emailSenderService) {
