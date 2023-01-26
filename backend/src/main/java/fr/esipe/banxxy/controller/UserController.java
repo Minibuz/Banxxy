@@ -33,7 +33,7 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getDependantUser(@PathVariable Long userId) {
         var users = userService.getDependantUser(userId);
         if (users.equals(Collections.emptyList()))
-            return new ResponseEntity<>(users, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -76,7 +76,7 @@ public class UserController {
     public ResponseEntity<UserDetailDto> getUser(@PathVariable Long userId) {
         var user = userService.getUser(userId);
         if (user == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
