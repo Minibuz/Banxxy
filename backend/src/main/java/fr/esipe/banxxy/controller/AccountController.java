@@ -19,7 +19,7 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @GetMapping("/{accountId}/{userId}")
+    @GetMapping("/{userId}/{accountId}")
     public ResponseEntity<AccountDto> getAccountDetails(@PathVariable Integer accountId, @PathVariable Integer userId) {
         var opt = accountService.getAccountDetails(accountId, userId);
         return opt.map(accountDto -> new ResponseEntity<>(accountDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));

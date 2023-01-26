@@ -24,7 +24,7 @@ public class AccountsController {
     public ResponseEntity<List<AccountDetailedDto>> getAccounts(@PathVariable Integer userId) {
         var accounts = accountsService.getAccounts(userId);
         return accounts.isEmpty() ?
-                new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :
+                new ResponseEntity<>(accounts, HttpStatus.NO_CONTENT) :
                 new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
@@ -32,15 +32,7 @@ public class AccountsController {
     public ResponseEntity<List<AccountDetailedDto>> getAttachedAccounts(@PathVariable Integer userId) {
         var accounts = accountsService.getAttachedAccounts(userId);
         return accounts.isEmpty() ?
-                new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :
-                new ResponseEntity<>(accounts, HttpStatus.OK);
-    }
-
-    @GetMapping("/all/{userId}")
-    public ResponseEntity<List<AccountDetailedDto>> getAllAccounts(@PathVariable Integer userId) {
-        var accounts = accountsService.getAllAccounts(userId);
-        return accounts.isEmpty() ?
-                new ResponseEntity<>(accounts, HttpStatus.BAD_REQUEST) :
+                new ResponseEntity<>(accounts, HttpStatus.NO_CONTENT) :
                 new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 }
