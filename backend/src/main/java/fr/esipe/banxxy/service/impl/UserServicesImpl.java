@@ -12,6 +12,8 @@ import fr.esipe.banxxy.repository.UserRepository;
 import fr.esipe.banxxy.service.EmailSenderService;
 import fr.esipe.banxxy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,12 +29,15 @@ public class UserServicesImpl implements UserService {
     private final UserRepository userRepository;
     private final EmailSenderService emailSenderService;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     public UserServicesImpl(AdvisorRepository advisorRepository, CustomerRepository customerRepository, UserRepository userRepository, EmailSenderServiceImpl emailSenderService) {
         this.advisorRepository = advisorRepository;
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
         this.emailSenderService = emailSenderService;
+        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     /**
@@ -133,7 +138,7 @@ public class UserServicesImpl implements UserService {
         customer.setFirstname(userReceivedDto.getFirstName());
         customer.setName(userReceivedDto.getLastName());
         customer.setUsername(userReceivedDto.getUserName());
-        customer.setPassword(userReceivedDto.getPassword());
+        customer.setPassword(passwordEncoder.encode(userReceivedDto.getPassword()));
         customer.setRole("ROLE_CUSTOMER");
         customer.setMail(userReceivedDto.getMail());
         customer.setType("customer");
@@ -149,7 +154,7 @@ public class UserServicesImpl implements UserService {
         advisor.setFirstname(userReceivedDto.getFirstName());
         advisor.setName(userReceivedDto.getLastName());
         advisor.setUsername(userReceivedDto.getUserName());
-        advisor.setPassword(userReceivedDto.getPassword());
+        advisor.setPassword(passwordEncoder.encode(userReceivedDto.getPassword()));
         advisor.setRole("ROLE_ADVISOR");
         advisor.setMail(userReceivedDto.getMail());
         advisor.setType("advisor");
