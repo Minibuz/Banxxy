@@ -23,6 +23,7 @@ export const can = (role) => {
         return false;
     }
     const user = JSON.parse(localStorage.getItem('user'));
+    if(user===null) return false;
     const role_user = user.roles[0]
     //const r = this.$store.state.auth.user.roles[0]
     if(role_user === null){
