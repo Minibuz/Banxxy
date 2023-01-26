@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 
 @RestController
 public class JmsController {
@@ -23,6 +23,6 @@ public class JmsController {
     @RequestMapping(value = "/api/jms/{authorId}/{accountId}", method = RequestMethod.GET)
     public void jmsSender(@PathVariable Long accountId,
                           @PathVariable Long authorId) {
-        jmsTemplate.convertAndSend("mailbox", new Log(ZonedDateTime.now(), accountId, authorId));
+        jmsTemplate.convertAndSend("mailbox", new Log(new Date(), accountId, authorId));
     }
 }

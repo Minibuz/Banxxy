@@ -1,10 +1,10 @@
 package fr.esipe.banxxy.dto.jms;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 
 public class Log {
 
-    private ZonedDateTime now;
+    private Date now;
 
     private Long idAccount;
 
@@ -13,17 +13,17 @@ public class Log {
     public Log() {
     }
 
-    public Log(ZonedDateTime now, Long idAccount, Long idAuthor) {
+    public Log(Date now, Long idAccount, Long idAuthor) {
         this.now = now;
         this.idAccount = idAccount;
         this.idAuthor = idAuthor;
     }
 
-    public ZonedDateTime getNow() {
+    public Date getNow() {
         return now;
     }
 
-    public void setNow(ZonedDateTime now) {
+    public void setNow(Date now) {
         this.now = now;
     }
 
@@ -46,6 +46,6 @@ public class Log {
     @Override
     // [Timestamp horaire demande] [timestamp réception de la demande] [ID Compte] – [ID demandeur]
     public String toString() {
-        return "[" + now + "] [" + ZonedDateTime.now() + "] [" + idAccount + "] - [" + idAuthor + "]";
+        return "[" + now + "] [" + new Date() + "] [" + idAccount + "] - [" + idAuthor + "]";
     }
 }
