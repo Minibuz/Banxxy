@@ -9,6 +9,4 @@ public interface AccountsService {
     List<AccountDetailedDto> getAccounts(Integer userId);
 
     List<AccountDetailedDto> getAttachedAccounts(Integer userId);
-
-    List<AccountDetailedDto> getAllAccounts(Integer userId);
 }
