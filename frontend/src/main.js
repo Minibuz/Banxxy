@@ -67,5 +67,5 @@ const vuetify = createVuetify({
     },
 })
 
-createApp(App).use(router).use(store).use(vuetify).use(Toast,options).mount('#app');
+createApp(App).use(store).use(router).use(vuetify).use(Toast,options).mount('#app');
 
