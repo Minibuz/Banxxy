@@ -60,11 +60,10 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<Boolean> deleteUser(@RequestBody Long userId) {
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Long userId) {
         if(userService.deleteUser(userId))
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-
     }
 
     /**
