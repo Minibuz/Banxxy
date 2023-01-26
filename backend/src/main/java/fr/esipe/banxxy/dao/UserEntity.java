@@ -180,23 +180,6 @@ public class UserEntity {
         this.transactions = transactions;
     }
 
-
-    /**
-     * Returns this user's ERole (customer or advisor).
-     *
-     * @return role This user's ERole. (ERole)
-     */
-    public ERole getRole() {
-        return role;
-    }
-
-    /**
-     * Sets a new ERole for this user (customer or advisor).
-     *
-     * @param role This user's new ERole (ERole)
-     */
-    public void setRole(ERole role) {
-
     public String getRole() {
         return role;
     }
