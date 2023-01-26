@@ -1,43 +1,51 @@
 package fr.esipe.banxxy.dto.jms;
 
-import java.util.Objects;
+import java.time.ZonedDateTime;
 
 public class Log {
 
-    private String message;
+    private ZonedDateTime now;
+
+    private Long idAccount;
+
+    private Long idAuthor;
 
     public Log() {
     }
 
-    public Log(String message) {
-        this.message = message;
+    public Log(ZonedDateTime now, Long idAccount, Long idAuthor) {
+        this.now = now;
+        this.idAccount = idAccount;
+        this.idAuthor = idAuthor;
     }
 
-    public String getMessage() {
-        return message;
+    public ZonedDateTime getNow() {
+        return now;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setNow(ZonedDateTime now) {
+        this.now = now;
+    }
+
+    public Long getIdAccount() {
+        return idAccount;
+    }
+
+    public void setIdAccount(Long idAccount) {
+        this.idAccount = idAccount;
+    }
+
+    public Long getIdAuthor() {
+        return idAuthor;
+    }
+
+    public void setIdAuthor(Long idAuthor) {
+        this.idAuthor = idAuthor;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Log log = (Log) o;
-        return Objects.equals(message, log.message);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(message);
-    }
-
-    @Override
+    // [Timestamp horaire demande] [timestamp réception de la demande] [ID Compte] – [ID demandeur]
     public String toString() {
-        return "Log{" +
-                "message='" + message + '\'' +
-                '}';
+        return "[" + now + "] [" + ZonedDateTime.now() + "] [" + idAccount + "] - [" + idAuthor + "]";
     }
 }

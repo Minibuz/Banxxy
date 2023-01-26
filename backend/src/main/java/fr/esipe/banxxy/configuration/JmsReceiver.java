@@ -9,6 +9,6 @@ public class JmsReceiver {
 
     @JmsListener(destination = "mailbox", containerFactory = "myFactory")
     public void receiveMessage(Log log) {
-        System.out.println("Received <" + log + ">");
+        System.out.println(log);
     }
 }
