@@ -26,9 +26,6 @@
                 <AccountCreationModal :user="selectedUser" @resetComptes="getComptes"></AccountCreationModal>
               </v-col>
 
-              <v-col cols="4" v-if="can('advisor')">
-                <ChequeRequest></ChequeRequest>
-              </v-col>
             </v-row>
 
           </div>
@@ -89,15 +86,14 @@
                 justify="center">
               <v-col cols="6">
                 <div class="pa-2 text-h6">
-                  N°Compte : {{ selectedCompte.id_compte }}
+                  N°Compte : {{ selectedCompte.id }}
                 </div>
               </v-col>
-              <v-col
-                  v-for="n in 1"
-                  :key="n"
-                  cols="4">
 
+              <v-col cols="4">
+                <ChequeRequest :compte="selectedCompte"></ChequeRequest>
               </v-col>
+
               <v-col cols="1">
                 <v-icon icon="mdi-close" @click="resetSelectedRows" ></v-icon>
               </v-col>
