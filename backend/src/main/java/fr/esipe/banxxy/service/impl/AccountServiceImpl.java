@@ -95,12 +95,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean deleteAccount(Integer userId, Integer accountId) {
-        var opt = userRepository.findById(Long.valueOf(userId));
+        var longId = Long.valueOf(userId);
+        var opt = userRepository.findById(longId);
         if (opt.isEmpty())
             return false;
         UserEntity user = opt.get();
         if (isAdvisor(user)) {
-            AdvisorEntity advisor = advisorRepository.findById(Long.valueOf(userId)).orElse(null);
+            AdvisorEntity advisor = advisorRepository.findById(longId).orElse(null);
             if (advisor == null)
                 return false;
             Set<CustomerEntity> customers = advisor.getCustomers();
@@ -114,7 +115,7 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
         } else if (isCustomer(user)) {
-            CustomerEntity customer = customerRepository.findById(Long.valueOf(userId)).orElse(null);
+            CustomerEntity customer = customerRepository.findById(longId).orElse(null);
             if (customer == null)
                 return false;
             if(customer.getAccounts().removeIf(account -> account.getId().equals(Long.valueOf(accountId)))) {
