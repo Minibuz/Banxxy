@@ -298,6 +298,7 @@ export default {
       //probably need to inform user if nothing append but for the moment.. FUCK IT
       if(user === null) return;
 
+
       const config = {
         method: 'DELETE',
         headers: authHeader()
@@ -305,7 +306,7 @@ export default {
       //config ready
       try {
         //TODO need the api path for delete a user
-        const response = await fetch(`/api/user/${user.id}`,config);
+        const response = await fetch(`/api/user/delete/${user.userId}`,config);
         const { results: data } = await response.json()
         //console.log(data)
 
